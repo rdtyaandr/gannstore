@@ -15,6 +15,7 @@ use thiagoalessio\TesseractOCR\TesseractOCR;
 use Intervention\Image\Facades\Image;
 use LaraOCR\OCR;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
+use Illuminate\Support\Facades\DB;
 
 class StrukController extends Controller
 {
@@ -54,52 +55,86 @@ class StrukController extends Controller
         $data = [];
 
         // Debug: tampilkan teks yang dibaca
-        \Log::info('OCR Text:', ['text' => $text]);
+        Log::info('OCR Text Raw:', ['text' => $text]);
 
         // Ekstrak nomor telepon
         if (preg_match('/\b(?:0|62|\+62)?[0-9]{9,12}\b/', $text, $matches)) {
             $data['nomor_telepon'] = preg_replace('/^(0|62|\+62)/', '', $matches[0]);
+            Log::info('Nomor Telepon Ditemukan:', ['nomor' => $data['nomor_telepon']]);
+        }
+
+        // Ekstrak tanggal dan waktu dengan format yang lebih spesifik
+        if (preg_match('/(\d{2})[\/\-](\d{2})[\/\-](\d{4})\s*(\d{2}):(\d{2})/', $text, $matches)) {
+            // Format: DD/MM/YYYY HH:MM
+            $data['tanggal'] = sprintf('%s/%s/%s %s:%s',
+                $matches[1], // hari
+                $matches[2], // bulan
+                $matches[3], // tahun
+                $matches[4], // jam
+                $matches[5]  // menit
+            );
+            Log::info('Tanggal dan Waktu Ditemukan (Format Lengkap):', ['tanggal' => $data['tanggal']]);
+        } elseif (preg_match('/(\d{2})[\/\-](\d{2})[\/\-](\d{4})/', $text, $matches)) {
+            // Format: DD/MM/YYYY
+            $data['tanggal'] = sprintf('%s/%s/%s',
+                $matches[1], // hari
+                $matches[2], // bulan
+                $matches[3]  // tahun
+            );
+            Log::info('Tanggal Ditemukan (Format Tanggal Saja):', ['tanggal' => $data['tanggal']]);
         }
 
         // Ekstrak nominal
         if (preg_match('/Rp\s*([\d.,]+)/', $text, $matches)) {
             $data['nominal'] = preg_replace('/[^\d]/', '', $matches[1]);
-        }
-
-        // Ekstrak tanggal
-        if (preg_match('/(\d{2}[\/\-]\d{2}[\/\-]\d{4}|\d{2}[\/\-]\d{2}[\/\-]\d{2})/', $text, $matches)) {
-            $data['tanggal'] = $matches[0];
+            Log::info('Nominal Ditemukan:', ['nominal' => $data['nominal']]);
         }
 
         // Ekstrak nama produk
         if (preg_match('/Produk\s*:\s*([^\n]+)/', $text, $matches)) {
             $data['nama_produk'] = trim($matches[1]);
+            Log::info('Nama Produk Ditemukan:', ['produk' => $data['nama_produk']]);
         }
 
         // Ekstrak nomor struk
         if (preg_match('/No\.?\s*:?\s*([A-Z0-9\-]+)/', $text, $matches)) {
             $data['nomor_struk'] = trim($matches[1]);
+            Log::info('Nomor Struk Ditemukan:', ['nomor_struk' => $data['nomor_struk']]);
         }
 
-        // Ekstrak waktu
-        if (preg_match('/(\d{2}:\d{2}(?::\d{2})?)/', $text, $matches)) {
-            $data['waktu'] = $matches[0];
+        // Ekstrak waktu terpisah jika belum ada dalam format tanggal
+        if (!isset($data['tanggal']) || !str_contains($data['tanggal'], ':')) {
+            if (preg_match('/(\d{2}):(\d{2})/', $text, $matches)) {
+                $data['waktu'] = sprintf('%s:%s', $matches[1], $matches[2]);
+                Log::info('Waktu Terpisah Ditemukan:', ['waktu' => $data['waktu']]);
+                // Gabungkan dengan tanggal jika ada
+                if (isset($data['tanggal'])) {
+                    $data['tanggal'] .= ' ' . $data['waktu'];
+                    Log::info('Tanggal dan Waktu Digabungkan:', ['hasil' => $data['tanggal']]);
+                }
+            }
         }
 
         // Ekstrak nama merchant
         if (preg_match('/Merchant\s*:?\s*([^\n]+)/', $text, $matches)) {
             $data['nama_merchant'] = trim($matches[1]);
+            Log::info('Nama Merchant Ditemukan:', ['merchant' => $data['nama_merchant']]);
         }
 
         // Ekstrak status transaksi
         if (preg_match('/Status\s*:?\s*([^\n]+)/', $text, $matches)) {
             $data['status'] = trim($matches[1]);
+            Log::info('Status Transaksi Ditemukan:', ['status' => $data['status']]);
         }
 
         // Ekstrak keterangan
         if (preg_match('/Keterangan\s*:?\s*([^\n]+)/', $text, $matches)) {
             $data['keterangan'] = trim($matches[1]);
+            Log::info('Keterangan Ditemukan:', ['keterangan' => $data['keterangan']]);
         }
+
+        // Log hasil akhir ekstraksi
+        Log::info('Hasil Akhir Ekstraksi Data:', $data);
 
         return $data;
     }
@@ -107,39 +142,147 @@ class StrukController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
-                'tempPath' => 'required|string',
-                'data' => 'required|array'
-            ]);
+            DB::beginTransaction();
 
-            // Pindahkan file dari temp ke storage permanen
-            $tempPath = $request->tempPath;
-            $permanentPath = 'struks/' . basename($tempPath);
-            Storage::move($tempPath, $permanentPath);
+            Log::info('Request data:', $request->all());
 
-            // Simpan data ke database
+            // Siapkan data dari form dinamis
+            $formData = $request->input('data', []);
+
+            // Buat record struk baru (tanpa gambar)
             $struk = Struk::create([
-                'image_path' => $permanentPath,
-                'data' => $request->data
+                'user_id' => Auth::id(),
+                'data' => $formData // Simpan data asli dalam bentuk JSON
             ]);
 
+            // Proses dan simpan field-field dinamis
+            if (!empty($formData)) {
+                foreach ($formData as $label => $value) {
+                    // Normalisasi label untuk nama field
+                    $name = Str::slug(strtolower($label), '_');
+
+                    // Cek apakah field sudah ada, kalau belum buat field baru
+                    $field = StrukField::firstOrCreate(
+                        ['name' => $name],
+                        [
+                            'label' => $label,
+                            'type' => 'text',
+                            'is_required' => false,
+                            'order' => StrukField::max('order') + 1
+                        ]
+                    );
+
+                    // Simpan nilai
+                    StrukValue::create([
+                        'struk_id' => $struk->id,
+                        'struk_field_id' => $field->id,
+                        'value' => $value
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            // Metode ini hanya untuk form input manual, tidak untuk API
+            return redirect()->route('dashboard')->with('success', 'Data struk berhasil disimpan');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error saving struk: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
+            return redirect()->back()->with('error', 'Gagal menyimpan data struk: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Menyimpan data struk dari hasil scan (API endpoint)
+     * Selalu mengembalikan respons JSON
+     */
+    public function storeFromScan(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            Log::info('Request scan data:', $request->all());
+
+            // Siapkan data dari form scan
+            $formData = $request->input('data', []);
+            $tempPath = $request->input('tempPath');
+
+            // Buat record struk baru (tanpa gambar)
+            $struk = Struk::create([
+                'user_id' => Auth::id(),
+                'data' => $formData, // Simpan data asli dalam bentuk JSON
+                // Jika perlu, simpan path gambar
+                'image_path' => str_replace('temp/', 'struks/', $tempPath)
+            ]);
+
+            // Proses dan simpan field-field dinamis
+            if (!empty($formData)) {
+                foreach ($formData as $label => $value) {
+                    // Normalisasi label untuk nama field
+                    $name = Str::slug(strtolower($label), '_');
+
+                    // Cek apakah field sudah ada, kalau belum buat field baru
+                    $field = StrukField::firstOrCreate(
+                        ['name' => $name],
+                        [
+                            'label' => $label,
+                            'type' => 'text',
+                            'is_required' => false,
+                            'order' => StrukField::max('order') + 1
+                        ]
+                    );
+
+                    // Simpan nilai
+                    StrukValue::create([
+                        'struk_id' => $struk->id,
+                        'struk_field_id' => $field->id,
+                        'value' => $value
+                    ]);
+                }
+            }
+
+            // Jika ada file gambar sementara, pindahkan ke lokasi permanen
+            if ($tempPath) {
+                if (Storage::exists($tempPath)) {
+                    // Pindahkan file dari temp ke direktori permanen
+                    $permanentPath = str_replace('temp/', 'struks/', $tempPath);
+                    Storage::move($tempPath, $permanentPath);
+                }
+            }
+
+            DB::commit();
+
+            // Selalu kembalikan respons JSON untuk API
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil disimpan',
-                'data' => $struk
+                'message' => 'Data struk berhasil disimpan',
+                'data' => $struk,
+                'redirect_url' => route('dashboard')
             ]);
 
         } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error saving scan struk: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menyimpan data: ' . $e->getMessage()
+                'message' => 'Gagal menyimpan data struk: ' . $e->getMessage()
             ], 500);
         }
     }
 
     public function show(Struk $struk)
     {
-        // Untuk menampilkan detail struk (opsional, akan ditambahkan nanti)
+        // Pastikan user hanya dapat melihat struk miliknya
+        if ($struk->user_id !== Auth::id()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke struk ini.');
+        }
+
+        return view('struks.show', compact('struk'));
     }
 
     public function edit(Struk $struk)
@@ -150,58 +293,59 @@ class StrukController extends Controller
 
     public function update(Request $request, Struk $struk)
     {
-        // Validasi screenshot jika ada
-        if ($request->hasFile('screenshot')) {
-            $request->validate([
-                'screenshot' => 'image|mimes:jpeg,png,jpg|max:2048'
-            ]);
+        try {
+            DB::beginTransaction();
 
-            if ($struk->screenshot_path) {
-                Storage::disk('public')->delete($struk->screenshot_path);
-            }
-            $struk->screenshot_path = $request->file('screenshot')->store('screenshots', 'public');
+            // Update data pada struk
+            $formData = $request->input('data', []);
+            $struk->data = $formData;
+
+            // Simpan perubahan pada struk (tanpa gambar)
             $struk->save();
-        }
 
-        // Update field-field yang ada di database
-        $fields = StrukField::all();
-        foreach ($fields as $field) {
-            if ($request->has($field->name)) {
-                $struk->values()->updateOrCreate(
-                    ['struk_field_id' => $field->id],
-                    ['value' => $request->input($field->name)]
-                );
-            }
-        }
+            // Hapus nilai lama dan buat nilai baru untuk setiap field
+            $struk->values()->delete();
 
-        // Proses custom fields jika ada
-        if ($request->has('custom_fields') && $request->has('custom_values')) {
-            $customFields = $request->input('custom_fields');
-            $customValues = $request->input('custom_values');
+            // Proses dan simpan field-field dinamis
+            if (!empty($formData)) {
+                foreach ($formData as $label => $value) {
+                    if (empty($value)) continue; // Lewati field yang kosong
 
-            foreach ($customFields as $index => $fieldName) {
-                if (isset($customValues[$index]) && !empty($fieldName) && !empty($customValues[$index])) {
-                    // Buat field baru jika belum ada
+                    // Normalisasi label untuk nama field
+                    $name = Str::slug(strtolower($label), '_');
+
+                    // Cek apakah field sudah ada, kalau belum buat field baru
                     $field = StrukField::firstOrCreate(
-                        ['name' => Str::slug($fieldName, '_')],
+                        ['name' => $name],
                         [
-                            'label' => $fieldName,
+                            'label' => $label,
                             'type' => 'text',
                             'is_required' => false,
                             'order' => StrukField::max('order') + 1
                         ]
                     );
 
-                    // Update atau buat nilai
-                    $struk->values()->updateOrCreate(
-                        ['struk_field_id' => $field->id],
-                        ['value' => $customValues[$index]]
-                    );
+                    // Simpan nilai baru
+                    StrukValue::create([
+                        'struk_id' => $struk->id,
+                        'struk_field_id' => $field->id,
+                        'value' => $value
+                    ]);
                 }
             }
-        }
 
-        return redirect()->route('dashboard')->with('success', 'Struk berhasil diperbarui.');
+            DB::commit();
+
+            return redirect()->route('dashboard')->with('success', 'Struk berhasil diperbarui.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating struk: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui struk: ' . $e->getMessage());
+        }
     }
 
     public function destroy(Struk $struk)
@@ -212,5 +356,36 @@ class StrukController extends Controller
         $struk->delete();
 
         return redirect()->route('dashboard')->with('success', 'Struk berhasil dihapus.');
+    }
+
+    public function logOCR(Request $request)
+    {
+        Log::info('Hasil OCR:', [
+            'text' => $request->input('text'),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Menampilkan detail keuangan dari struk untuk modal
+     */
+    public function financial(Struk $struk)
+    {
+        // Ambil data yang relevan dari struk
+        $data = [
+            'produk' => $struk->getValue('produk'),
+            'harga' => $struk->getValue('harga'),
+            'tanggal' => $struk->getValue('tanggal'),
+            'status' => $struk->getValue('status'),
+            // Tambahan data keuangan lainnya
+            'nomor_hp' => $struk->getValue('nomor_hp'),
+            'pembayaran' => $struk->getValue('pembayaran'),
+            'id_transaksi' => $struk->getValue('id_transaksi'),
+            'sn_ref' => $struk->getValue('sn_ref'),
+        ];
+
+        return response()->json($data);
     }
 }

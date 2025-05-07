@@ -9,32 +9,25 @@ class StrukFieldSeeder extends Seeder
 {
     public function run(): void
     {
-        $fields = [
-            [
-                'name' => 'product_name',
-                'label' => 'Nama Produk',
-                'type' => 'text',
-                'is_required' => true,
-                'order' => 1
-            ],
-            [
-                'name' => 'original_price',
-                'label' => 'Harga Asli (AgenPulsa)',
-                'type' => 'number',
-                'is_required' => true,
-                'order' => 2
-            ],
-            [
-                'name' => 'gannstore_price',
-                'label' => 'Harga GannStore',
-                'type' => 'number',
-                'is_required' => true,
-                'order' => 3
-            ]
+        // Daftar field dasar yang umum ditemukan di struk
+        $commonFields = [
+            // Field utama (wajib)
+            ['name' => 'tanggal', 'label' => 'Tanggal', 'is_required' => true],
+            ['name' => 'produk', 'label' => 'Produk', 'is_required' => true],
+            ['name' => 'harga', 'label' => 'Harga', 'is_required' => true],
         ];
 
-        foreach ($fields as $field) {
-            StrukField::create($field);
+        // Buat field menggunakan firstOrCreate untuk menghindari duplikasi
+        foreach ($commonFields as $index => $fieldInfo) {
+            StrukField::firstOrCreate(
+                ['name' => $fieldInfo['name']],
+                [
+                    'label' => $fieldInfo['label'],
+                    'type' => 'text',
+                    'is_required' => $fieldInfo['is_required'],
+                    'order' => $index + 1
+                ]
+            );
         }
     }
-} 
+}

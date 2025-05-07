@@ -12,10 +12,19 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [StrukController::class, 'index'])->name('dashboard');
 
-    Route::resource('struks', StrukController::class);
+    // Route untuk form input manual
+    Route::post('/struks', [StrukController::class, 'store'])->name('struks.store');
+
+    // Route untuk preview dan save hasil scan
     Route::post('/struks/preview', [StrukController::class, 'preview'])->name('struks.preview');
+    Route::post('/struks/from-scan', [StrukController::class, 'storeFromScan'])->name('struks.storeFromScan');
+
+    // Other routes
+    Route::post('/log-ocr', [StrukController::class, 'logOCR'])->name('struks.log-ocr');
+    Route::resource('struks', StrukController::class)->except(['store']);
+    Route::get('/struks/{struk}/financial', [StrukController::class, 'financial'])->name('struks.financial');
     Route::resource('struk-fields', StrukFieldController::class);
-    
+
     // Route untuk mengambil field-field
     Route::get('/struk-fields', function () {
         return App\Models\StrukField::orderBy('order')->get();

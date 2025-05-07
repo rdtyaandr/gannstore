@@ -11,6 +11,11 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    // Redirect semua rute register ke login karena tidak digunakan (pengguna tunggal)
+    Route::get('register', function() {
+        return redirect()->route('login');
+    })->name('register');
+
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 

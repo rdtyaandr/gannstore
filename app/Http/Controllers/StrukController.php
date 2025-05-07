@@ -23,7 +23,13 @@ class StrukController extends Controller
     {
         $struks = Struk::where('user_id', Auth::id())->latest()->paginate(10);
         $fields = StrukField::orderBy('order')->get();
-        return view('dashboard', compact('struks', 'fields'));
+
+        // Ambil informasi struk mana yang sudah memiliki data cuan
+        $strukIdsWithCuan = \App\Models\Cuan::where('user_id', Auth::id())
+            ->pluck('struk_id')
+            ->toArray();
+
+        return view('dashboard', compact('struks', 'fields', 'strukIdsWithCuan'));
     }
 
     public function preview(Request $request)
@@ -350,12 +356,30 @@ class StrukController extends Controller
 
     public function destroy(Struk $struk)
     {
-        if ($struk->screenshot_path) {
-            Storage::disk('public')->delete($struk->screenshot_path);
-        }
-        $struk->delete();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('dashboard')->with('success', 'Struk berhasil dihapus.');
+            // Hapus data cuan yang terkait dengan struk ini (jika ada)
+            \App\Models\Cuan::where('struk_id', $struk->id)->delete();
+
+            // Hapus file struk jika ada
+            if ($struk->screenshot_path) {
+                Storage::disk('public')->delete($struk->screenshot_path);
+            }
+
+            // Hapus data struk
+            $struk->delete();
+
+            DB::commit();
+
+            return redirect()->route('dashboard')->with('success', 'Struk berhasil dihapus.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting struk: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Gagal menghapus struk: ' . $e->getMessage());
+        }
     }
 
     public function logOCR(Request $request)

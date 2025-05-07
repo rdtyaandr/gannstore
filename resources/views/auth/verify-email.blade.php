@@ -1,21 +1,27 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+    <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Verifikasi Email</h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            {{ __('Terima kasih telah mendaftar! Sebelum memulai, silakan verifikasi email Anda dengan mengklik link yang baru saja kami kirimkan.') }}
+        </p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            {{ __('Jika Anda tidak menerima email, kami akan dengan senang hati mengirimkan email lainnya.') }}
+        </p>
     </div>
 
     @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+        <div class="mb-4 p-3 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm rounded-md">
+            {{ __('Link verifikasi baru telah dikirim ke alamat email yang Anda berikan saat pendaftaran.') }}
         </div>
     @endif
 
-    <div class="mt-4 flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row items-center justify-between mt-4 gap-4">
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
 
             <div>
                 <x-primary-button>
-                    {{ __('Resend Verification Email') }}
+                    {{ __('Kirim Ulang Email Verifikasi') }}
                 </x-primary-button>
             </div>
         </form>
@@ -23,8 +29,8 @@
         <form method="POST" action="{{ route('logout') }}">
             @csrf
 
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
+            <button type="submit" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                {{ __('Keluar') }}
             </button>
         </form>
     </div>

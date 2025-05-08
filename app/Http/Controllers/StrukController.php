@@ -21,7 +21,44 @@ class StrukController extends Controller
 {
     public function index()
     {
-        $struks = Struk::where('user_id', Auth::id())->latest()->paginate(10);
+        // Field wajib yang harus ada di setiap struk
+        $requiredFields = ['tanggal', 'produk', 'harga'];
+
+        // Ambil semua struk user
+        $struks = Struk::where('user_id', Auth::id())->latest()->get();
+
+        // Filter struk yang tidak memiliki field wajib
+        foreach ($struks as $key => $struk) {
+            $isValid = true;
+            foreach ($requiredFields as $field) {
+                if (!$struk->getValue($field)) {
+                    $isValid = false;
+                    break;
+                }
+            }
+
+            // Jika struk tidak valid, hapus
+            if (!$isValid) {
+                try {
+                    $struk->delete();
+                    $struks->forget($key);
+                } catch (\Exception $e) {
+                    Log::error('Error deleting invalid struk: ' . $e->getMessage());
+                }
+            }
+        }
+
+        // Paginate hasil yang tersisa
+        $currentPage = request()->input('page', 1);
+        $perPage = 10;
+        $paginatedResults = new \Illuminate\Pagination\LengthAwarePaginator(
+            $struks->forPage($currentPage, $perPage),
+            $struks->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         $fields = StrukField::orderBy('order')->get();
 
         // Ambil informasi struk mana yang sudah memiliki data cuan
@@ -29,7 +66,7 @@ class StrukController extends Controller
             ->pluck('struk_id')
             ->toArray();
 
-        return view('dashboard', compact('struks', 'fields', 'strukIdsWithCuan'));
+        return view('dashboard', compact('paginatedResults', 'fields', 'strukIdsWithCuan'));
     }
 
     public function preview(Request $request)

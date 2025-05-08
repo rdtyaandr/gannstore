@@ -122,6 +122,36 @@
 
             // Event listener untuk tombol buat
             createButton.addEventListener('click', async () => {
+                // Validasi field wajib
+                const wajibFields = ['Tanggal', 'Produk', 'Harga'];
+                const missingFields = [];
+
+                wajibFields.forEach(wajibField => {
+                    const fieldElements = [...document.querySelectorAll('.field-label-display')];
+                    const fieldElement = fieldElements.find(el => {
+                        return el.textContent.trim().toLowerCase().replace(/\s+\*$/, '') === wajibField.toLowerCase();
+                    });
+
+                    if (fieldElement) {
+                        const valueInput = fieldElement.closest('.group').querySelector('.field-value');
+                        if (!valueInput.value.trim()) {
+                            missingFields.push(wajibField);
+                            // Highlight the field
+                            valueInput.classList.add('border-red-500');
+                        } else {
+                            valueInput.classList.remove('border-red-500');
+                        }
+                    } else {
+                        missingFields.push(wajibField);
+                    }
+                });
+
+                // Jika ada field wajib yang kosong, tampilkan peringatan dan berhenti
+                if (missingFields.length > 0) {
+                    showFieldWarningModal(missingFields);
+                    return;
+                }
+
                 const formData = {};
                 document.querySelectorAll('.group').forEach(field => {
                     const label = field.querySelector('.field-label-display').textContent;
@@ -204,6 +234,9 @@
 
                 // Siapkan form fields
                 prepareFormFields(formattedText);
+
+                // Inisialisasi format harga
+                initPriceFormatting();
             }).catch(err => {
                 // Sembunyikan loading overlay
                 loadingOverlay.classList.add('hidden');
@@ -441,15 +474,133 @@
                 }
             }
 
+            // Pastikan field wajib selalu ada
+            const wajibFields = ['Tanggal', 'Produk', 'Harga'];
+            let emptyRequiredFields = [];
+
+            wajibFields.forEach(field => {
+                if (!Object.keys(formData).some(key => key.toLowerCase() === field.toLowerCase())) {
+                    formData[field] = ''; // Tambahkan field dengan nilai kosong
+                    emptyRequiredFields.push(field);
+                }
+            });
+
+            // Cek duplikat field dengan nama berbeda namun maksud sama
+            const fieldMappings = {
+                'tanggal': 'Tanggal',
+                'tgl': 'Tanggal',
+                'date': 'Tanggal',
+                'produk': 'Produk',
+                'product': 'Produk',
+                'nama produk': 'Produk',
+                'item': 'Produk',
+                'harga': 'Harga',
+                'price': 'Harga',
+                'total': 'Harga',
+                'jumlah': 'Harga'
+            };
+
+            // Normalisasi nama field berdasarkan mapping
+            const normalizedData = {};
+            for (const [key, value] of Object.entries(formData)) {
+                const lowerKey = key.toLowerCase();
+                const normalizedKey = fieldMappings[lowerKey] || key;
+                normalizedData[normalizedKey] = value;
+            }
+
             // Buat form fields dari data yang sudah diproses
-            for (const [label, value] of Object.entries(formData)) {
+            for (const [label, value] of Object.entries(normalizedData)) {
                 addFormField(label, value);
             }
+
+            // Tampilkan modal peringatan jika ada field wajib yang tidak terdeteksi/kosong
+            if (emptyRequiredFields.length > 0) {
+                setTimeout(() => {
+                    showFieldWarningModal(emptyRequiredFields);
+                }, 500);
+            }
+        }
+
+        // Modal peringatan untuk field wajib yang kosong
+        function showFieldWarningModal(emptyFields) {
+            // Buat modal jika belum ada
+            let warningModal = document.getElementById('fieldWarningModal');
+            if (!warningModal) {
+                warningModal = document.createElement('div');
+                warningModal.id = 'fieldWarningModal';
+                warningModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+
+                const modalHTML = `
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Perhatian</h3>
+                            <button id="closeWarningModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="mb-4">
+                            <div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-600 p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-yellow-400 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                                            Field wajib berikut tidak terdeteksi atau kosong. Harap isi nilai pada semua field wajib.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <ul id="warningFieldList" class="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300">
+                                    <!-- Daftar field akan diisi secara dinamis -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button id="confirmWarningBtn" class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800">
+                                Saya Mengerti
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                warningModal.innerHTML = modalHTML;
+                document.body.appendChild(warningModal);
+
+                // Event listeners untuk modal
+                warningModal.querySelector('#closeWarningModal').addEventListener('click', function() {
+                    warningModal.classList.add('hidden');
+                });
+
+                warningModal.querySelector('#confirmWarningBtn').addEventListener('click', function() {
+                    warningModal.classList.add('hidden');
+                });
+            } else {
+                warningModal.classList.remove('hidden');
+            }
+
+            // Isi daftar field yang kosong
+            const listContainer = warningModal.querySelector('#warningFieldList');
+            listContainer.innerHTML = '';
+
+            emptyFields.forEach(field => {
+                const li = document.createElement('li');
+                li.textContent = field;
+                listContainer.appendChild(li);
+            });
         }
 
         function addFormField(label = '', value = '') {
             const formContainer = document.querySelector('#formFields .space-y-4');
             const fieldId = 'field_' + Date.now();
+            const isWajibField = ['tanggal', 'produk', 'harga'].includes(label.toLowerCase());
 
             const fieldDiv = document.createElement('div');
             fieldDiv.className = 'bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group';
@@ -457,24 +608,29 @@
                 <div class="flex items-start justify-between">
                     <div class="flex-grow">
                         <div class="mb-2">
-                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" onclick="editFieldLabel(this)">${label || 'Klik untuk menambah nama field'}</div>
+                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 ${isWajibField ? '' : 'cursor-pointer hover:text-blue-600 dark:hover:text-blue-400'}" ${isWajibField ? '' : 'onclick="editFieldLabel(this)"'}>
+                                ${label || 'Klik untuk menambah nama field'}${isWajibField ? '<span class="text-red-500"> *</span>' : ''}
+                            </div>
                             <input type="text"
-                                   placeholder="Nama Field"
-                                   value="${label}"
-                                   class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
-                                   onblur="updateFieldLabel(this)"
-                                   onkeypress="handleFieldLabelKeyPress(event, this)">
+                                placeholder="Nama Field"
+                                value="${label}"
+                                class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
+                                ${isWajibField ? 'readonly' : ''}
+                                onblur="updateFieldLabel(this)"
+                                onkeypress="handleFieldLabelKeyPress(event, this)">
                         </div>
                         <div>
                             <input type="text"
-                                   placeholder="Value"
-                                   value="${value}"
-                                   class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
+                                placeholder="Value"
+                                value="${value}"
+                                class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
+                                ${isWajibField ? 'required' : ''}>
                         </div>
                     </div>
                     <button type="button"
-                            class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onclick="deleteField(this)">
+                        class="delete-field ml-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onclick="deleteField(this)"
+                        ${isWajibField ? 'disabled style="display: none;"' : ''}>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                         </svg>
@@ -483,6 +639,70 @@
             `;
 
             formContainer.appendChild(fieldDiv);
+
+            // Jika label adalah harga, atur formatting angka
+            const valueInput = fieldDiv.querySelector('.field-value');
+            if (label && label.toLowerCase().includes('harga')) {
+                setupPriceField(valueInput);
+            }
+        }
+
+        function deleteField(button) {
+            const fieldDiv = button.closest('.group');
+            const labelDisplay = fieldDiv.querySelector('.field-label-display');
+            const labelText = labelDisplay.textContent.trim().toLowerCase();
+            const isWajibField = ['tanggal', 'produk', 'harga'].includes(labelText.replace(/\s+\*$/, '').toLowerCase());
+
+            // Jangan izinkan penghapusan field wajib
+            if (isWajibField) {
+                alert('Field wajib tidak dapat dihapus!');
+                return;
+            }
+
+            fieldDiv.remove();
+        }
+
+        // Fungsi untuk memformat angka dengan pemisah ribuan
+        function formatRupiah(angka) {
+            return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Setup field harga dengan validasi dan formatting
+        function setupPriceField(input) {
+            // Atur atribut input untuk hanya angka
+            input.setAttribute('inputmode', 'numeric');
+            // Hapus attribute pattern agar tidak menampilkan "please match the requested format"
+            // input.setAttribute('pattern', '[0-9]*');
+
+            // Format nilai awal
+            if (input.value) {
+                // Hapus karakter non-angka dan format ulang
+                let value = input.value.replace(/\D/g, '');
+                if (value) {
+                    input.value = formatRupiah(value);
+                }
+            }
+
+            // Event listener untuk input
+            input.addEventListener('input', function(e) {
+                // Hapus karakter non-angka
+                let value = e.target.value.replace(/\D/g, '');
+
+                // Format dengan pemisah ribuan
+                if (value) {
+                    e.target.value = formatRupiah(value);
+                }
+            });
+
+            // Event listener untuk mencegah input karakter non-angka
+            input.addEventListener('keypress', function(e) {
+                const charCode = (e.which) ? e.which : e.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            });
         }
 
         function editFieldLabel(element) {
@@ -512,9 +732,15 @@
             }
         }
 
-        function deleteField(button) {
-            const fieldDiv = button.closest('.group');
-            fieldDiv.remove();
+        // Inisialisasi format untuk field harga
+        function initPriceFormatting() {
+            // Cari semua input field
+            document.querySelectorAll('.field-value').forEach(input => {
+                const fieldLabel = input.closest('.group').querySelector('.field-label-display').textContent;
+                if (fieldLabel && fieldLabel.toLowerCase().includes('harga')) {
+                    setupPriceField(input);
+                }
+            });
         }
     </script>
     @endpush

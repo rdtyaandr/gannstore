@@ -37,6 +37,15 @@
                                         // Dapatkan data dari field values dan gabungkan dengan data JSON
                                         $strukData = $struk->data ?? [];
 
+                                        // Decode semua nilai di strukData untuk menghilangkan karakter URL-encoded
+                                        $decodedStrukData = [];
+                                        foreach ($strukData as $key => $val) {
+                                            $decodedKey = urldecode($key);
+                                            $decodedVal = urldecode($val);
+                                            $decodedStrukData[$decodedKey] = $decodedVal;
+                                        }
+                                        $strukData = $decodedStrukData;
+
                                         // Ambil semua field yang wajib dan tampilkan terlebih dahulu
                                         $requiredFields = $fields->where('is_required', true)->sortBy('order');
                                         $optionalFields = $fields->where('is_required', false)->sortBy('order');
@@ -78,92 +87,155 @@
                                         <h4 class="text-md font-medium text-gray-700 dark:text-gray-300">Informasi Tambahan</h4>
                                     </div>
 
+                                    @php
+                                        // Daftar field wajib yang tidak boleh duplikat
+                                        $requiredKeywords = ['tanggal', 'produk', 'harga'];
+
+                                        // Fungsi untuk memeriksa apakah sebuah label adalah field wajib
+                                        function isRequiredField($label, $requiredKeywords) {
+                                            $label = strtolower(trim($label));
+                                            foreach ($requiredKeywords as $keyword) {
+                                                if (str_contains($label, $keyword)) {
+                                                    return true;
+                                                }
+                                            }
+                                            return false;
+                                        }
+                                    @endphp
+
+                                    <!-- Field Opsional dari database -->
                                     @foreach($optionalFields as $field)
                                         @php
                                             $fieldValue = $struk->getValue($field->name) ?? ($strukData[$field->label] ?? '');
+                                            // Skip jika tidak ada nilai atau field ini adalah field wajib
+                                            if (empty($fieldValue) || isRequiredField($field->label, $requiredKeywords)) {
+                                                continue;
+                                            }
+
+                                            // Pastikan fieldValue adalah string dan bersihkan dari karakter newline
+                                            $fieldValue = is_string($fieldValue) ? str_replace(["\r\n", "\r", "\n"], " ", $fieldValue) : $fieldValue;
                                         @endphp
 
-                                        @if($fieldValue)
-                                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group">
-                                                <div class="flex items-start justify-between">
-                                                    <div class="flex-grow">
-                                                        <div class="mb-2">
-                                                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 {{ in_array(strtolower($field->name), ['tanggal', 'produk', 'harga']) ? '' : 'cursor-pointer hover:text-blue-600 dark:hover:text-blue-400' }}">
-                                                                {{ $field->label }}
-                                                            </div>
-                                                            <input type="text"
-                                                                placeholder="Nama Field"
-                                                                value="{{ $field->label }}"
-                                                                class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
-                                                                {{ in_array(strtolower($field->name), ['tanggal', 'produk', 'harga']) ? 'readonly' : '' }}
-                                                                onblur="updateFieldLabel(this)"
-                                                                onkeypress="handleFieldLabelKeyPress(event, this)"
-                                                                data-required="false">
+                                        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group">
+                                            <div class="flex items-start justify-between">
+                                                <div class="flex-grow">
+                                                    <div class="mb-2">
+                                                        <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400">
+                                                            {{ $field->label }}
                                                         </div>
-                                                        <div>
-                                                            <input type="text"
-                                                                placeholder="Value"
-                                                                name="data[{{ $field->label }}]"
-                                                                value="{{ old('data.' . $field->label, $fieldValue) }}"
-                                                                class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
-                                                        </div>
+                                                        <input type="text"
+                                                            placeholder="Nama Field"
+                                                            value="{{ $field->label }}"
+                                                            class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
+                                                            onblur="updateFieldLabel(this)"
+                                                            onkeypress="handleFieldLabelKeyPress(event, this)"
+                                                            data-required="false">
                                                     </div>
-                                                    <button type="button"
-                                                        class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onclick="deleteField(this)"
-                                                        {{ in_array(strtolower($field->name), ['tanggal', 'produk', 'harga']) ? 'disabled style="display: none;"' : '' }}>
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                        </svg>
-                                                    </button>
+                                                    <div>
+                                                        <input type="text"
+                                                            placeholder="Value"
+                                                            name="data[{{ $field->label }}]"
+                                                            value="{{ old('data.' . $field->label, $fieldValue) }}"
+                                                            class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
+                                                    </div>
                                                 </div>
+                                                <button type="button"
+                                                    class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    onclick="deleteField(this)">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
                                             </div>
-                                        @endif
+                                        </div>
                                     @endforeach
 
                                     <!-- Tambahan Field Kustom yang mungkin tidak ada di database -->
                                     @foreach($strukData as $label => $value)
                                         @php
-                                            $fieldExists = $fields->where('label', $label)->first();
-                                            $isWajibField = in_array(strtolower($label), ['tanggal', 'produk', 'harga']);
+                                            // Skip jika tidak ada nilai
+                                            if (empty($value)) continue;
+
+                                            // Decode URL-encoded label
+                                            $decodedLabel = $label;
+                                            $iterations = 0;
+                                            $maxIterations = 5;
+
+                                            while (strpos($decodedLabel, '%') !== false && $iterations < $maxIterations) {
+                                                $newLabel = urldecode($decodedLabel);
+                                                if ($newLabel === $decodedLabel) break;
+                                                $decodedLabel = $newLabel;
+                                                $iterations++;
+                                            }
+
+                                            // Bersihkan label
+                                            $cleanedLabel = trim(preg_replace('/\s+/', ' ', $decodedLabel));
+                                            $cleanedLabel = preg_replace('/[*\s]+$/', '', $cleanedLabel);
+
+                                            // Skip jika ini field wajib
+                                            if (isRequiredField($cleanedLabel, $requiredKeywords)) {
+                                                continue;
+                                            }
+
+                                            // Cek apakah field ini sudah ada di database
+                                            $fieldExists = false;
+                                            foreach($fields as $f) {
+                                                if (strtolower(trim($f->label)) === strtolower(trim($cleanedLabel))) {
+                                                    $fieldExists = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            // Skip jika field sudah ada di database (karena sudah diproses di loop sebelumnya)
+                                            if ($fieldExists) continue;
+
+                                            // Decode URL-encoded value
+                                            $decodedValue = $value;
+                                            $iterations = 0;
+
+                                            while (strpos($decodedValue, '%') !== false && $iterations < $maxIterations) {
+                                                $newValue = urldecode($decodedValue);
+                                                if ($newValue === $decodedValue) break;
+                                                $decodedValue = $newValue;
+                                                $iterations++;
+                                            }
+
+                                            // Bersihkan nilai
+                                            $decodedValue = is_string($decodedValue) ? str_replace(["\r\n", "\r", "\n"], " ", $decodedValue) : $decodedValue;
                                         @endphp
 
-                                        @if(!$fieldExists && !empty($value))
-                                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group">
-                                                <div class="flex items-start justify-between">
-                                                    <div class="flex-grow">
-                                                        <div class="mb-2">
-                                                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 {{ $isWajibField ? '' : 'cursor-pointer hover:text-blue-600 dark:hover:text-blue-400' }}">
-                                                                {{ $label }}
-                                                            </div>
-                                                            <input type="text"
-                                                                placeholder="Nama Field"
-                                                                value="{{ $label }}"
-                                                                class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
-                                                                {{ $isWajibField ? 'readonly' : '' }}
-                                                                onblur="updateFieldLabel(this)"
-                                                                onkeypress="handleFieldLabelKeyPress(event, this)"
-                                                                data-required="false">
+                                        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group">
+                                            <div class="flex items-start justify-between">
+                                                <div class="flex-grow">
+                                                    <div class="mb-2">
+                                                        <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400">
+                                                            {{ $cleanedLabel }}
                                                         </div>
-                                                        <div>
-                                                            <input type="text"
-                                                                placeholder="Value"
-                                                                name="data[{{ $label }}]"
-                                                                value="{{ old('data.' . $label, $value) }}"
-                                                                class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
-                                                        </div>
+                                                        <input type="text"
+                                                            placeholder="Nama Field"
+                                                            value="{{ $cleanedLabel }}"
+                                                            class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
+                                                            onblur="updateFieldLabel(this)"
+                                                            onkeypress="handleFieldLabelKeyPress(event, this)"
+                                                            data-required="false">
                                                     </div>
-                                                    <button type="button"
-                                                        class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        onclick="deleteField(this)"
-                                                        {{ $isWajibField ? 'disabled style="display: none;"' : '' }}>
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                        </svg>
-                                                    </button>
+                                                    <div>
+                                                        <input type="text"
+                                                            placeholder="Value"
+                                                            name="data[{{ $cleanedLabel }}]"
+                                                            value="{{ old('data.' . $cleanedLabel, $decodedValue) }}"
+                                                            class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
+                                                    </div>
                                                 </div>
+                                                <button type="button"
+                                                    class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    onclick="deleteField(this)">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
                                             </div>
-                                        @endif
+                                        </div>
                                     @endforeach
                                 </div>
 
@@ -270,39 +342,79 @@
             const url = form.getAttribute('action');
             const submitBtn = form.querySelector('button[type="submit"]');
 
+            // Debugging
+            console.log('Submitting form to:', url);
+            console.log('Form data keys:', [...formData.keys()]);
+
             // Nonaktifkan tombol submit untuk mencegah submit berulang
             submitBtn.disabled = true;
             submitBtn.textContent = 'Menyimpan...';
+
+            // Tambahkan CSRF token secara manual jika belum ada
+            if (!formData.has('_token')) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                formData.append('_token', csrfToken);
+            }
+
+            // Pastikan method PUT disertakan
+            if (!formData.has('_method')) {
+                formData.append('_method', 'PUT');
+            }
 
             fetch(url, {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin'
             })
             .then(response => {
+                console.log('Response status:', response.status);
                 if (response.redirected) {
                     // Jika server mengirim redirect, ikuti redirect
+                    console.log('Redirecting to:', response.url);
                     window.location.href = response.url;
-                    return;
+                    return null;
                 }
 
-                return response.json();
+                return response.text().then(text => {
+                    try {
+                        return text ? JSON.parse(text) : null;
+                    } catch (e) {
+                        console.error('Error parsing JSON response:', e);
+                        console.log('Raw response:', text);
+                        return { error: 'Gagal memproses respons dari server' };
+                    }
+                });
             })
             .then(data => {
+                console.log('Response data:', data);
+
                 if (data && data.error) {
                     // Jika ada error, tampilkan di modal
                     showErrorModal('Gagal menyimpan perubahan', [data.error]);
-                } else if (!data) {
-                    // Jika tidak ada data dan tidak ada redirect, kemungkinan sukses
+                } else if (data && data.success) {
+                    // Jika ada data sukses, redirect ke URL yang diberikan
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        window.location.href = "{{ route('dashboard') }}";
+                    }
+                } else if (data === null) {
+                    // Response kosong atau redirect sudah ditangani
+                    // Do nothing, browser akan diarahkan oleh redirect sebelumnya
+                } else {
+                    // Response tidak berformat yang diharapkan
+                    // Coba reload halaman dashboard
                     window.location.href = "{{ route('dashboard') }}";
                 }
             })
             .catch(error => {
                 // Handle error
+                console.error('Fetch error:', error);
                 showErrorModal('Terjadi kesalahan', ['Tidak dapat menghubungi server. Silakan coba lagi nanti.']);
-                console.error('Error:', error);
             })
             .finally(() => {
                 // Aktifkan kembali tombol submit

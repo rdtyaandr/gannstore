@@ -178,17 +178,12 @@
                         })
                     });
 
-                    // Log response untuk debug
-                    console.log('Response status:', response.status);
-
                     if (!response.ok) {
                         const errorText = await response.text();
-                        console.error('Response error:', errorText);
                         throw new Error(`Server merespons dengan status ${response.status}`);
                     }
 
                     const result = await response.json();
-                    console.log('Response success:', result);
 
                     if (result.success) {
                         // Hapus alert dan langsung redirect
@@ -197,7 +192,6 @@
                         throw new Error(result.message || 'Gagal menyimpan data');
                     }
                 } catch (error) {
-                    console.error('Error:', error);
                     // Tetap log error ke console tapi jangan tampilkan alert
                 } finally {
                     loadingOverlay.classList.add('hidden');
@@ -222,15 +216,7 @@
                 // Sembunyikan loading overlay
                 loadingOverlay.classList.add('hidden');
 
-                // Tampilkan hasil OCR di console
-                console.log('Hasil OCR Mentah:', text);
-                console.log('-------------------');
-
                 const formattedText = processOCRResult(text);
-
-                // Tampilkan hasil setelah diformat
-                console.log('Hasil OCR Setelah Diformat:', formattedText);
-                console.log('-------------------');
 
                 // Siapkan form fields
                 prepareFormFields(formattedText);
@@ -414,7 +400,6 @@
 
             // Jika tidak menemukan field apapun, gunakan pendekatan alternatif
             if (orderedResults.length === 0) {
-                console.log("Menggunakan pendekatan alternatif untuk ekstraksi data");
                 for (const line of lines) {
                     if (line.includes(':') && !line.includes('Rincian Transaksi')) {
                         orderedResults.push(line);
@@ -430,7 +415,6 @@
             const formContainer = document.querySelector('#formFields .space-y-4');
 
             if (!formContainer) {
-                console.log('Form container not found');
                 return;
             }
 

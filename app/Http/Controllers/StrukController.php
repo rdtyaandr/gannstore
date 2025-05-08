@@ -8,7 +8,7 @@ use App\Models\StrukValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Str;
 use Google\Cloud\Vision\V1\ImageAnnotatorClient;
 use thiagoalessio\TesseractOCR\TesseractOCR;
@@ -43,7 +43,7 @@ class StrukController extends Controller
                     $struk->delete();
                     $struks->forget($key);
                 } catch (\Exception $e) {
-                    Log::error('Error deleting invalid struk: ' . $e->getMessage());
+
                 }
             }
         }
@@ -98,12 +98,12 @@ class StrukController extends Controller
         $data = [];
 
         // Debug: tampilkan teks yang dibaca
-        Log::info('OCR Text Raw:', ['text' => $text]);
+
 
         // Ekstrak nomor telepon
         if (preg_match('/\b(?:0|62|\+62)?[0-9]{9,12}\b/', $text, $matches)) {
             $data['nomor_telepon'] = preg_replace('/^(0|62|\+62)/', '', $matches[0]);
-            Log::info('Nomor Telepon Ditemukan:', ['nomor' => $data['nomor_telepon']]);
+
         }
 
         // Ekstrak tanggal dan waktu dengan format yang lebih spesifik
@@ -116,7 +116,7 @@ class StrukController extends Controller
                 $matches[4], // jam
                 $matches[5]  // menit
             );
-            Log::info('Tanggal dan Waktu Ditemukan (Format Lengkap):', ['tanggal' => $data['tanggal']]);
+
         } elseif (preg_match('/(\d{2})[\/\-](\d{2})[\/\-](\d{4})/', $text, $matches)) {
             // Format: DD/MM/YYYY
             $data['tanggal'] = sprintf('%s/%s/%s',
@@ -124,36 +124,36 @@ class StrukController extends Controller
                 $matches[2], // bulan
                 $matches[3]  // tahun
             );
-            Log::info('Tanggal Ditemukan (Format Tanggal Saja):', ['tanggal' => $data['tanggal']]);
+
         }
 
         // Ekstrak nominal
         if (preg_match('/Rp\s*([\d.,]+)/', $text, $matches)) {
             $data['nominal'] = preg_replace('/[^\d]/', '', $matches[1]);
-            Log::info('Nominal Ditemukan:', ['nominal' => $data['nominal']]);
+
         }
 
         // Ekstrak nama produk
         if (preg_match('/Produk\s*:\s*([^\n]+)/', $text, $matches)) {
             $data['nama_produk'] = trim($matches[1]);
-            Log::info('Nama Produk Ditemukan:', ['produk' => $data['nama_produk']]);
+
         }
 
         // Ekstrak nomor struk
         if (preg_match('/No\.?\s*:?\s*([A-Z0-9\-]+)/', $text, $matches)) {
             $data['nomor_struk'] = trim($matches[1]);
-            Log::info('Nomor Struk Ditemukan:', ['nomor_struk' => $data['nomor_struk']]);
+
         }
 
         // Ekstrak waktu terpisah jika belum ada dalam format tanggal
         if (!isset($data['tanggal']) || !str_contains($data['tanggal'], ':')) {
             if (preg_match('/(\d{2}):(\d{2})/', $text, $matches)) {
                 $data['waktu'] = sprintf('%s:%s', $matches[1], $matches[2]);
-                Log::info('Waktu Terpisah Ditemukan:', ['waktu' => $data['waktu']]);
+
                 // Gabungkan dengan tanggal jika ada
                 if (isset($data['tanggal'])) {
                     $data['tanggal'] .= ' ' . $data['waktu'];
-                    Log::info('Tanggal dan Waktu Digabungkan:', ['hasil' => $data['tanggal']]);
+
                 }
             }
         }
@@ -161,23 +161,21 @@ class StrukController extends Controller
         // Ekstrak nama merchant
         if (preg_match('/Merchant\s*:?\s*([^\n]+)/', $text, $matches)) {
             $data['nama_merchant'] = trim($matches[1]);
-            Log::info('Nama Merchant Ditemukan:', ['merchant' => $data['nama_merchant']]);
+
         }
 
         // Ekstrak status transaksi
         if (preg_match('/Status\s*:?\s*([^\n]+)/', $text, $matches)) {
             $data['status'] = trim($matches[1]);
-            Log::info('Status Transaksi Ditemukan:', ['status' => $data['status']]);
+
         }
 
         // Ekstrak keterangan
         if (preg_match('/Keterangan\s*:?\s*([^\n]+)/', $text, $matches)) {
             $data['keterangan'] = trim($matches[1]);
-            Log::info('Keterangan Ditemukan:', ['keterangan' => $data['keterangan']]);
+
         }
 
-        // Log hasil akhir ekstraksi
-        Log::info('Hasil Akhir Ekstraksi Data:', $data);
 
         return $data;
     }
@@ -187,20 +185,21 @@ class StrukController extends Controller
         try {
             DB::beginTransaction();
 
-            Log::info('Request data:', $request->all());
-
             // Siapkan data dari form dinamis
             $formData = $request->input('data', []);
+
+            // Decode URL encoded characters in formData dengan metode deepDecode
+            $decodedFormData = $this->deepDecodeData($formData);
 
             // Buat record struk baru (tanpa gambar)
             $struk = Struk::create([
                 'user_id' => Auth::id(),
-                'data' => $formData // Simpan data asli dalam bentuk JSON
+                'data' => $decodedFormData // Simpan data asli dalam bentuk JSON
             ]);
 
             // Proses dan simpan field-field dinamis
-            if (!empty($formData)) {
-                foreach ($formData as $label => $value) {
+            if (!empty($decodedFormData)) {
+                foreach ($decodedFormData as $label => $value) {
                     // Normalisasi label untuk nama field
                     $name = Str::slug(strtolower($label), '_');
 
@@ -210,7 +209,7 @@ class StrukController extends Controller
                         [
                             'label' => $label,
                             'type' => 'text',
-                            'is_required' => false,
+                            'is_required' => in_array(strtolower($name), ['tanggal', 'produk', 'harga']),
                             'order' => StrukField::max('order') + 1
                         ]
                     );
@@ -219,7 +218,7 @@ class StrukController extends Controller
                     StrukValue::create([
                         'struk_id' => $struk->id,
                         'struk_field_id' => $field->id,
-                        'value' => $value
+                        'value' => $value // nilai sudah didecode di atas
                     ]);
                 }
             }
@@ -231,8 +230,8 @@ class StrukController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error saving struk: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
+
+
 
             return redirect()->back()->with('error', 'Gagal menyimpan data struk: ' . $e->getMessage());
         }
@@ -247,23 +246,29 @@ class StrukController extends Controller
         try {
             DB::beginTransaction();
 
-            Log::info('Request scan data:', $request->all());
+
 
             // Siapkan data dari form scan
             $formData = $request->input('data', []);
             $tempPath = $request->input('tempPath');
 
+            // Decode URL encoded characters in formData
+            $decodedFormData = [];
+            foreach ($formData as $key => $value) {
+                $decodedFormData[$key] = urldecode($value);
+            }
+
             // Buat record struk baru (tanpa gambar)
             $struk = Struk::create([
                 'user_id' => Auth::id(),
-                'data' => $formData, // Simpan data asli dalam bentuk JSON
+                'data' => $decodedFormData, // Simpan data asli dalam bentuk JSON
                 // Jika perlu, simpan path gambar
                 'image_path' => str_replace('temp/', 'struks/', $tempPath)
             ]);
 
             // Proses dan simpan field-field dinamis
-            if (!empty($formData)) {
-                foreach ($formData as $label => $value) {
+            if (!empty($decodedFormData)) {
+                foreach ($decodedFormData as $label => $value) {
                     // Normalisasi label untuk nama field
                     $name = Str::slug(strtolower($label), '_');
 
@@ -278,11 +283,14 @@ class StrukController extends Controller
                         ]
                     );
 
+                    // Decode URL encoded characters like %0D%0A before saving
+                    $decodedValue = urldecode($value);
+
                     // Simpan nilai
                     StrukValue::create([
                         'struk_id' => $struk->id,
                         'struk_field_id' => $field->id,
-                        'value' => $value
+                        'value' => $decodedValue
                     ]);
                 }
             }
@@ -308,8 +316,8 @@ class StrukController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error saving scan struk: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
+
+
 
             return response()->json([
                 'success' => false,
@@ -339,56 +347,238 @@ class StrukController extends Controller
         try {
             DB::beginTransaction();
 
-            // Update data pada struk
+            // Dapatkan data form
             $formData = $request->input('data', []);
-            $struk->data = $formData;
 
-            // Simpan perubahan pada struk (tanpa gambar)
-            $struk->save();
+            // Decoder untuk semua nilai dalam formData
+            $decodedFormData = $this->deepDecodeData($formData);
 
-            // Hapus nilai lama dan buat nilai baru untuk setiap field
-            $struk->values()->delete();
+            // Simpan data ke dalam JSON storage
+            $struk->update([
+                'data' => $decodedFormData
+            ]);
 
-            // Proses dan simpan field-field dinamis
-            if (!empty($formData)) {
-                foreach ($formData as $label => $value) {
-                    if (empty($value)) continue; // Lewati field yang kosong
-
+            // Proses field-field
+            if (!empty($decodedFormData)) {
+                foreach ($decodedFormData as $label => $value) {
                     // Normalisasi label untuk nama field
-                    $name = Str::slug(strtolower($label), '_');
+                    $name = \Illuminate\Support\Str::slug(strtolower($label), '_');
 
-                    // Cek apakah field sudah ada, kalau belum buat field baru
+                    // Cek apakah field sudah ada
                     $field = StrukField::firstOrCreate(
                         ['name' => $name],
                         [
                             'label' => $label,
                             'type' => 'text',
-                            'is_required' => false,
+                            'is_required' => in_array(strtolower($name), ['tanggal', 'produk', 'harga']),
                             'order' => StrukField::max('order') + 1
                         ]
                     );
 
-                    // Simpan nilai baru
-                    StrukValue::create([
-                        'struk_id' => $struk->id,
-                        'struk_field_id' => $field->id,
-                        'value' => $value
-                    ]);
+                    // Cari nilai yang sudah ada untuk field ini
+                    $existingValue = StrukValue::where('struk_id', $struk->id)
+                        ->where('struk_field_id', $field->id)
+                        ->first();
+
+                    if ($existingValue) {
+                        $existingValue->update([
+                            'value' => $value // Nilai sudah didecode di atas
+                        ]);
+                    } else {
+                        StrukValue::create([
+                            'struk_id' => $struk->id,
+                            'struk_field_id' => $field->id,
+                            'value' => $value // Nilai sudah didecode di atas
+                        ]);
+                    }
                 }
             }
 
             DB::commit();
 
-            return redirect()->route('dashboard')->with('success', 'Struk berhasil diperbarui.');
+            // Menentukan format respons berdasarkan jenis request
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Struk berhasil diperbarui',
+                    'redirect_url' => route('dashboard')
+                ]);
+            }
+
+            // Respons default untuk non-AJAX request
+            return redirect()->route('dashboard')->with('success', 'Struk berhasil diperbarui');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error updating struk: ' . $e->getMessage());
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Gagal memperbarui struk: ' . $e->getMessage()
+                ], 500);
+            }
 
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Gagal memperbarui struk: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Decoder dan pembersih kunci dan nilai untuk memproses URL-encoded secara rekursif
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    private function deepDecodeData($data)
+    {
+        if (!is_array($data)) {
+            return $this->deepDecodeString($data);
+        }
+
+        // Kunci yang sudah diproses (untuk menghindari duplikasi)
+        $processedKeys = [];
+
+        // Field-field wajib yang sering terduplikasi
+        $wajibFields = ['tanggal', 'produk', 'harga'];
+
+        // Pertama decode semua kunci dan nilai
+        $tempData = [];
+        foreach ($data as $key => $value) {
+            $decodedKey = $this->cleanFieldName($key);
+            $decodedValue = $this->deepDecodeString($value);
+
+            // Standarisasi field wajib
+            foreach ($wajibFields as $wajibField) {
+                if (str_contains(strtolower($decodedKey), $wajibField)) {
+                    $decodedKey = ucfirst($wajibField); // Pastikan format seragam untuk field wajib
+                    break;
+                }
+            }
+
+            $tempData[$decodedKey] = $decodedValue;
+        }
+
+        // Hasilnya
+        $result = [];
+
+        // Dahulukan field wajib yang sudah distandarisasi
+        foreach ($wajibFields as $wajibField) {
+            $standardKey = ucfirst($wajibField);
+            if (isset($tempData[$standardKey])) {
+                $result[$standardKey] = $tempData[$standardKey];
+                $processedKeys[] = strtolower($standardKey);
+            }
+        }
+
+        // Tambahkan field lainnya (yang bukan field wajib atau variant-nya)
+        foreach ($tempData as $key => $value) {
+            $keyLower = strtolower($key);
+
+            // Skip field wajib yang sudah diproses
+            $skipKey = false;
+            foreach ($wajibFields as $wajibField) {
+                if (str_contains($keyLower, $wajibField)) {
+                    $skipKey = true;
+                    break;
+                }
+            }
+
+            // Tambahkan jika belum diproses
+            if (!$skipKey || !in_array($keyLower, $processedKeys)) {
+                $result[$key] = $value;
+                $processedKeys[] = $keyLower;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Membersihkan nama field dari karakter spesial dan format
+     *
+     * @param string $fieldName
+     * @return string
+     */
+    private function cleanFieldName($fieldName)
+    {
+        if (!is_string($fieldName)) {
+            return $fieldName;
+        }
+
+        // Decode URL-encoded characters
+        $decoded = $fieldName;
+        $iterations = 0;
+        $maxIterations = 10;
+
+        while (strpos($decoded, '%') !== false && $iterations < $maxIterations) {
+            $newValue = urldecode($decoded);
+            if ($newValue === $decoded) {
+                break;
+            }
+            $decoded = $newValue;
+            $iterations++;
+        }
+
+        // Bersihkan spasi berlebih
+        $cleaned = trim(preg_replace('/\s+/', ' ', $decoded));
+
+        // Hapus karakter * dan spasi di akhir (untuk field seperti "Harga *")
+        $cleaned = preg_replace('/[*\s]+$/', '', $cleaned);
+
+        // Standarisasi nama field (opsional, misalnya "Id Transaksi" menjadi "ID Transaksi")
+        $specialMappings = [
+            'id transaksi' => 'ID Transaksi',
+            'nomor hp' => 'Nomor HP',
+            'sn ref' => 'SN/Ref',
+        ];
+
+        $cleanedLower = strtolower($cleaned);
+        foreach ($specialMappings as $from => $to) {
+            if ($cleanedLower === $from) {
+                return $to;
+            }
+        }
+
+        // Jika ini adalah field wajib utama, standarisasi format
+        $mandatoryFields = ['tanggal', 'produk', 'harga'];
+        foreach ($mandatoryFields as $field) {
+            if ($cleanedLower === $field || str_contains($cleanedLower, $field)) {
+                return ucfirst($field);
+            }
+        }
+
+        return $cleaned;
+    }
+
+    /**
+     * Decoder URL-encoded secara rekursif untuk string
+     *
+     * @param string $string
+     * @return string
+     */
+    private function deepDecodeString($string)
+    {
+        if (!is_string($string)) {
+            return $string;
+        }
+
+        // Decode nilai sampai tidak ada lagi perubahan (karakter %)
+        $decodedValue = $string;
+        $iterations = 0;
+        $maxIterations = 10; // Batas maksimum iterasi untuk mencegah infinite loop
+
+        while (strpos($decodedValue, '%') !== false && $iterations < $maxIterations) {
+            $newValue = urldecode($decodedValue);
+            // Jika tidak ada perubahan, hentikan
+            if ($newValue === $decodedValue) {
+                break;
+            }
+            $decodedValue = $newValue;
+            $iterations++;
+        }
+
+        return $decodedValue;
     }
 
     public function destroy(Struk $struk)
@@ -426,7 +616,7 @@ class StrukController extends Controller
                 if ($valueCount === 0) {
                     // Tidak ada struk yang menggunakan field ini, jadi hapus field
                     StrukField::where('id', $fieldId)->delete();
-                    Log::info('Field ID ' . $fieldId . ' dihapus karena tidak digunakan oleh struk manapun');
+
                 }
             }
 
@@ -436,7 +626,7 @@ class StrukController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error deleting struk: ' . $e->getMessage());
+
 
             return redirect()->back()->with('error', 'Gagal menghapus struk: ' . $e->getMessage());
         }
@@ -444,11 +634,6 @@ class StrukController extends Controller
 
     public function logOCR(Request $request)
     {
-        Log::info('Hasil OCR:', [
-            'text' => $request->input('text'),
-            'timestamp' => now()->toDateTimeString()
-        ]);
-
         return response()->json(['success' => true]);
     }
 

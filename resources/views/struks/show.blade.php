@@ -120,6 +120,13 @@
 
                             <!-- Detail Transaksi Lainnya -->
                             <div class="p-6 space-y-4">
+                                @php
+                                    // Simpan semua field yang sudah ditampilkan
+                                    $displayedFields = [
+                                        'produk', 'harga', 'tanggal'
+                                    ];
+                                @endphp
+
                                 @if($struk->getValue('id_transaksi'))
                                 <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                     <div class="flex items-center">
@@ -132,6 +139,7 @@
                                     </div>
                                     <span class="font-medium dark:text-gray-300">{{ $struk->getValue('id_transaksi') }}</span>
                                 </div>
+                                @php $displayedFields[] = 'id_transaksi'; @endphp
                                 @endif
 
                                 @if($struk->getValue('nomor_hp'))
@@ -146,6 +154,7 @@
                                     </div>
                                     <span class="font-medium dark:text-gray-300">{{ $struk->getValue('nomor_hp') }}</span>
                                 </div>
+                                @php $displayedFields[] = 'nomor_hp'; @endphp
                                 @endif
 
                                 @if($struk->getValue('pembayaran'))
@@ -160,6 +169,7 @@
                                     </div>
                                     <span class="font-medium dark:text-gray-300">{{ $struk->getValue('pembayaran') }}</span>
                                 </div>
+                                @php $displayedFields[] = 'pembayaran'; @endphp
                                 @endif
 
                                 @if($struk->getValue('status'))
@@ -176,15 +186,74 @@
                                         {{ $struk->getValue('status') }}
                                     </span>
                                 </div>
+                                @php $displayedFields[] = 'status'; @endphp
+                                @endif
+
+                                @if($struk->getValue('sn_ref'))
+                                <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
+                                    <div class="flex items-center">
+                                        <div class="bg-blue-50 dark:bg-blue-900 p-1.5 rounded-lg mr-3">
+                                            <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-gray-600 dark:text-gray-400">SN/Ref</span>
+                                    </div>
+                                    <span class="font-medium text-right dark:text-gray-300">{{ Str::limit($struk->getValue('sn_ref'), 15, '...') }}</span>
+                                </div>
+                                @php $displayedFields[] = 'sn_ref'; @endphp
                                 @endif
 
                                 <!-- Tambahkan field lain jika ada -->
                                 @foreach($struk->data as $label => $value)
                                     @php
-                                        $skipFields = ['produk', 'harga', 'tanggal', 'id_transaksi', 'nomor_hp', 'pembayaran', 'status', 'sn_ref'];
+                                        // Hanya field wajib yang perlu difilter dari duplikasi
+                                        $wajibFields = ['produk', 'harga', 'tanggal'];
+
+                                        // Decode dan bersihkan label
+                                        $decodedLabel = is_string($label) ? $label : '';
+                                        $iterations = 0;
+                                        $maxIterations = 5;
+
+                                        // Decode URL-encoded label
+                                        while (strpos($decodedLabel, '%') !== false && $iterations < $maxIterations) {
+                                            $newLabel = urldecode($decodedLabel);
+                                            if ($newLabel === $decodedLabel) break;
+                                            $decodedLabel = $newLabel;
+                                            $iterations++;
+                                        }
+
+                                        // Bersihkan label
+                                        $cleanedLabel = trim(preg_replace('/\s+/', ' ', $decodedLabel));
+                                        $cleanedLabel = preg_replace('/[*\s]+$/', '', $cleanedLabel); // Hapus tanda bintang di akhir
+                                        $labelLower = strtolower($cleanedLabel);
+
+                                        // Decode nilai
+                                        $decodedValue = is_string($value) ? $value : '';
+                                        $iterations = 0;
+
+                                        // Decode URL-encoded value
+                                        while (strpos($decodedValue, '%') !== false && $iterations < $maxIterations) {
+                                            $newValue = urldecode($decodedValue);
+                                            if ($newValue === $decodedValue) break;
+                                            $decodedValue = $newValue;
+                                            $iterations++;
+                                        }
+
+                                        // Bersihkan nilai dari karakter newline
+                                        $decodedValue = str_replace(["\r\n", "\n", "\r"], " ", $decodedValue);
+
+                                        // Periksa apakah ini field wajib yang perlu difilter
+                                        $shouldSkip = false;
+                                        foreach ($wajibFields as $field) {
+                                            if (str_contains($labelLower, $field)) {
+                                                $shouldSkip = true;
+                                                break;
+                                            }
+                                        }
                                     @endphp
 
-                                    @if(!empty($value) && !in_array(strtolower($label), $skipFields))
+                                    @if(!empty($decodedValue) && !$shouldSkip)
                                     <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                         <div class="flex items-center">
                                             <div class="bg-blue-50 dark:bg-blue-900 p-1.5 rounded-lg mr-3">
@@ -192,9 +261,9 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
                                             </div>
-                                            <span class="text-gray-600 dark:text-gray-400">{{ $label }}</span>
+                                            <span class="text-gray-600 dark:text-gray-400">{{ $cleanedLabel }}</span>
                                         </div>
-                                        <span class="font-medium text-right dark:text-gray-300">{{ Str::limit($value, 15, '...') }}</span>
+                                        <span class="font-medium text-right dark:text-gray-300">{{ Str::limit($decodedValue, 15, '...') }}</span>
                                     </div>
                                     @endif
                                 @endforeach

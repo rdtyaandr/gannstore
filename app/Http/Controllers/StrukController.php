@@ -359,16 +359,39 @@ class StrukController extends Controller
         try {
             DB::beginTransaction();
 
+            // Simpan ID field yang digunakan oleh struk ini
+            $fieldIds = StrukValue::where('struk_id', $struk->id)
+                ->pluck('struk_field_id')
+                ->unique()
+                ->toArray();
+
             // Hapus data cuan yang terkait dengan struk ini (jika ada)
             \App\Models\Cuan::where('struk_id', $struk->id)->delete();
+
+            // Hapus nilai-nilai dari struk ini
+            StrukValue::where('struk_id', $struk->id)->delete();
 
             // Hapus file struk jika ada
             if ($struk->screenshot_path) {
                 Storage::disk('public')->delete($struk->screenshot_path);
+            } else if ($struk->image_path) {
+                Storage::delete($struk->image_path);
             }
 
             // Hapus data struk
             $struk->delete();
+
+            // Periksa setiap field yang sebelumnya digunakan oleh struk ini
+            // Jika tidak ada struk lain yang menggunakan field tersebut, hapus field-nya
+            foreach ($fieldIds as $fieldId) {
+                $valueCount = StrukValue::where('struk_field_id', $fieldId)->count();
+
+                if ($valueCount === 0) {
+                    // Tidak ada struk yang menggunakan field ini, jadi hapus field
+                    StrukField::where('id', $fieldId)->delete();
+                    Log::info('Field ID ' . $fieldId . ' dihapus karena tidak digunakan oleh struk manapun');
+                }
+            }
 
             DB::commit();
 

@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Beranda') }}
         </h2>
     </x-slot>
@@ -42,40 +42,40 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <div class="bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded relative mb-4" role="alert">
                     <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
 
             @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <div class="bg-green-100 dark:bg-green-900/50 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded relative mb-4" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>
                 </div>
             @endif
 
         <!-- Tombol Upload dan Manual -->
         <div class="flex space-x-4 mb-6">
-                <button type="button" onclick="openModal('upload')" class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition">
+                <button type="button" onclick="openModal('upload')" class="bg-blue-600 dark:bg-blue-700 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 dark:hover:bg-blue-800 transition">
                 Scan Gambar Otomatis
             </button>
-                <button type="button" onclick="openModal('manual')" class="bg-green-600 text-white px-6 py-3 rounded-lg shadow hover:bg-green-700 transition">
+                <button type="button" onclick="openModal('manual')" class="bg-green-600 dark:bg-green-700 text-white px-6 py-3 rounded-lg shadow hover:bg-green-700 dark:hover:bg-green-800 transition">
                 Buat Data Manual
             </button>
         </div>
 
         <!-- Garis Pemisah -->
-        <hr class="border-gray-300 mb-6">
+        <hr class="border-gray-300 dark:border-gray-700 mb-6">
 
         <!-- Riwayat Struk -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Riwayat Struk</h2>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Riwayat Struk</h2>
             @if ($struks->isEmpty())
-                <p class="text-gray-600">Belum ada struk yang diunggah.</p>
+                <p class="text-gray-600 dark:text-gray-400">Belum ada struk yang diunggah.</p>
             @else
                 <div class="overflow-x-auto">
                     <table class="w-full table-auto">
                         <thead>
-                            <tr class="bg-gray-200 text-gray-700">
+                            <tr class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                 <th class="p-3 text-left">No</th>
                                 <th class="p-3 text-left">Produk</th>
                                 <th class="p-3 text-left">Tanggal</th>
@@ -84,25 +84,25 @@
                         </thead>
                         <tbody>
                             @foreach ($struks as $index => $struk)
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="p-3">{{ $loop->iteration }}</td>
-                                    <td class="p-3">{{ $struk->getValue('produk') }}</td>
-                                    <td class="p-3">{{ $struk->getValue('tanggal') }}</td>
+                                <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="p-3 dark:text-gray-300">{{ $loop->iteration }}</td>
+                                    <td class="p-3 dark:text-gray-300">{{ $struk->getValue('produk') }}</td>
+                                    <td class="p-3 dark:text-gray-300">{{ $struk->getValue('tanggal') }}</td>
                                     <td class="p-3 flex space-x-2">
                                         <!-- Tombol Info/Cetak Struk -->
-                                        <a href="{{ route('struks.show', $struk) }}" class="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600">
+                                        <a href="{{ route('struks.show', $struk) }}" class="bg-blue-500 dark:bg-blue-600 text-white p-2 rounded-full hover:bg-blue-600 dark:hover:bg-blue-700">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                             </svg>
                                         </a>
 
                                         <!-- Tombol Uang Dollar -->
-                                        <a href="#" onclick="showFinancialDetails('{{ $struk->id }}')" class="relative bg-green-500 text-white p-2 rounded-full hover:bg-green-600">
+                                        <a href="#" onclick="showFinancialDetails('{{ $struk->id }}')" class="relative bg-green-500 dark:bg-green-600 text-white p-2 rounded-full hover:bg-green-600 dark:hover:bg-green-700">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
                                             @if(in_array($struk->id, $strukIdsWithCuan ?? []))
-                                                <span class="absolute -top-1 -right-1 bg-yellow-400 text-xs text-white rounded-full h-4 w-4 flex items-center justify-center" title="Sudah ada data cuan">
+                                                <span class="absolute -top-1 -right-1 bg-yellow-400 dark:bg-yellow-500 text-xs text-white rounded-full h-4 w-4 flex items-center justify-center" title="Sudah ada data cuan">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                                     </svg>
@@ -111,7 +111,7 @@
                                         </a>
 
                                         <!-- Tombol Edit yang sudah ada -->
-                                        <a href="{{ route('struks.edit', $struk) }}" class="bg-yellow-500 text-white p-2 rounded-full hover:bg-yellow-600">
+                                        <a href="{{ route('struks.edit', $struk) }}" class="bg-yellow-500 dark:bg-yellow-600 text-white p-2 rounded-full hover:bg-yellow-600 dark:hover:bg-yellow-700">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15.414a2 2 0 01-2.828 0l-4.243-4.243a2 2 0 010-2.828 2 2 0 012.828 0l4.243 4.243"></path>
                                                 </svg>
@@ -119,7 +119,7 @@
                                         <form action="{{ route('struks.destroy', $struk) }}" method="POST" onsubmit="return confirm('Hapus struk ini?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600">
+                                            <button type="submit" class="bg-red-500 dark:bg-red-600 text-white p-2 rounded-full hover:bg-red-600 dark:hover:bg-red-700">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                                     </svg>
@@ -140,10 +140,10 @@
     <!-- Modal Upload Gambar -->
     <div id="uploadModal" class="modal">
         <div class="modal-backdrop" onclick="closeModal('upload')"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
+        <div class="modal-content bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold">Scan Gambar Otomatis</h2>
-                <button type="button" onclick="closeModal('upload')" class="text-gray-500 hover:text-gray-700">
+                <h2 class="text-xl font-semibold dark:text-gray-200">Scan Gambar Otomatis</h2>
+                <button type="button" onclick="closeModal('upload')" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -152,17 +152,18 @@
             <form action="{{ route('struks.preview') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-6">
-                    <label for="screenshot" class="block text-gray-700 text-sm font-bold mb-2">Pilih Gambar Struk</label>
+                    <label for="screenshot" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Pilih Gambar Struk</label>
                     <input type="file"
                            name="screenshot"
                            id="screenshot"
                            accept="image/*"
-                           class="block w-full text-sm text-gray-500
+                           class="block w-full text-sm text-gray-500 dark:text-gray-400
                                   file:mr-4 file:py-2 file:px-4
                                   file:rounded-full file:border-0
                                   file:text-sm file:font-semibold
                                   file:bg-blue-50 file:text-blue-700
-                                  hover:file:bg-blue-100"
+                                  dark:file:bg-blue-900 dark:file:text-blue-200
+                                  hover:file:bg-blue-100 dark:hover:file:bg-blue-800"
                            required>
                     @error('screenshot')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -172,11 +173,11 @@
                 <div class="flex justify-end space-x-2">
                     <button type="button"
                             onclick="closeModal('upload')"
-                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                            class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-600">
                         Batal
                     </button>
                     <button type="submit"
-                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800">
                         Scan
                     </button>
                 </div>
@@ -187,10 +188,10 @@
     <!-- Modal Buat Data Manual -->
     <div id="manualModal" class="modal">
         <div class="modal-backdrop" onclick="closeModal('manual')"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-4">
+        <div class="modal-content bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-2xl mx-4">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold">Tambah Data Baru</h2>
-                <button type="button" onclick="closeModal('manual')" class="text-gray-500 hover:text-gray-700">
+                <h2 class="text-xl font-semibold dark:text-gray-200">Tambah Data Baru</h2>
+                <button type="button" onclick="closeModal('manual')" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -202,7 +203,7 @@
                     <!-- Fields will be added here dynamically -->
                 </div>
 
-                <button id="addManualFieldBtn" type="button" class="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center">
+                <button id="addManualFieldBtn" type="button" class="mt-4 w-full bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-700 flex items-center justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -210,8 +211,8 @@
                 </button>
 
                 <div class="flex justify-end space-x-2 mt-4">
-                    <button type="button" onclick="closeModal('manual')" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Batal</button>
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Simpan</button>
+                    <button type="button" onclick="closeModal('manual')" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-600">Batal</button>
+                    <button type="submit" class="bg-green-600 dark:bg-green-700 text-white px-4 py-2 rounded hover:bg-green-700 dark:hover:bg-green-800">Simpan</button>
                 </div>
             </form>
         </div>
@@ -220,10 +221,10 @@
     <!-- Modal Detail Keuangan -->
     <div id="financialModal" class="modal">
         <div class="modal-backdrop" onclick="closeModal('financial')"></div>
-        <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
+        <div class="modal-content bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold">Detail Keuangan</h2>
-                <button type="button" onclick="closeModal('financial')" class="text-gray-500 hover:text-gray-700">
+                <h2 class="text-xl font-semibold dark:text-gray-200">Detail Keuangan</h2>
+                <button type="button" onclick="closeModal('financial')" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -232,16 +233,16 @@
             <div id="financialContent" class="space-y-4">
                 <!-- Detail keuangan akan diisi di sini -->
                 <div class="animate-pulse">
-                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                    <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                    <div class="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
+                    <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 mb-4"></div>
+                    <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/2 mb-4"></div>
+                    <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded w-5/6 mb-4"></div>
                 </div>
             </div>
             <div class="mt-6 flex justify-end">
-                <button type="button" id="hitungCuanBtn" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 mr-2">Hitung Cuan</button>
-                <button type="button" id="editCuanBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2 hidden">Edit Keuntungan</button>
-                <button type="button" id="simpanCuanBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mr-2 hidden">Simpan Keuntungan</button>
-                <button type="button" onclick="closeModal('financial')" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Tutup</button>
+                <button type="button" id="hitungCuanBtn" class="bg-yellow-500 dark:bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-600 dark:hover:bg-yellow-700 mr-2">Hitung Cuan</button>
+                <button type="button" id="editCuanBtn" class="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-700 mr-2 hidden">Edit Keuntungan</button>
+                <button type="button" id="simpanCuanBtn" class="bg-green-600 dark:bg-green-700 text-white px-4 py-2 rounded hover:bg-green-700 dark:hover:bg-green-800 mr-2 hidden">Simpan Keuntungan</button>
+                <button type="button" onclick="closeModal('financial')" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-600">Tutup</button>
             </div>
         </div>
     </div>
@@ -291,74 +292,74 @@
 
                             // Tampilkan data yang sebenarnya di sini
                             let html = `
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h3 class="font-medium text-lg mb-2">Informasi Harga</h3>
+                                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h3 class="font-medium text-lg mb-2 dark:text-gray-200">Informasi Harga</h3>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <div class="text-gray-600">Produk:</div>
-                                        <div class="font-medium">${data.produk || '-'}</div>
+                                        <div class="text-gray-600 dark:text-gray-400">Produk:</div>
+                                        <div class="font-medium dark:text-gray-300">${data.produk || '-'}</div>
 
-                                        <div class="text-gray-600">Harga Jual (dari struk):</div>
-                                        <div class="font-medium text-green-600">Rp ${formatRupiah(data.harga || '0')}</div>
+                                        <div class="text-gray-600 dark:text-gray-400">Harga Jual (dari struk):</div>
+                                        <div class="font-medium text-green-600 dark:text-green-400">Rp ${formatRupiah(data.harga || '0')}</div>
 
-                                        <div class="text-gray-600">Tanggal:</div>
-                                        <div class="font-medium">${data.tanggal || '-'}</div>`;
+                                        <div class="text-gray-600 dark:text-gray-400">Tanggal:</div>
+                                        <div class="font-medium dark:text-gray-300">${data.tanggal || '-'}</div>`;
 
                             // Jika sudah ada data cuan, tampilkan harga beli yang sudah tersimpan
                             if (checkResult.exists) {
                                 const cuanData = checkResult.data;
                                 html += `
-                                        <div class="text-gray-600">Harga Beli (modal):</div>
-                                        <div class="font-medium">
+                                        <div class="text-gray-600 dark:text-gray-400">Harga Beli (modal):</div>
+                                        <div class="font-medium dark:text-gray-300">
                                             <div class="flex items-center">
                                                 <span id="hargaBeliDisplay">Rp ${formatRupiah(cuanData.harga_beli || '0')}</span>
-                                                <button id="toggleEditBtn" class="ml-2 text-blue-500 hover:text-blue-700">
+                                                <button id="toggleEditBtn" class="ml-2 text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                     </svg>
                                                 </button>
                                             </div>
                                             <div id="editHargaBeliContainer" class="mt-2 hidden">
-                                                <input type="text" id="hargaBeli" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                <input type="text" id="hargaBeli" class="w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                                    placeholder="Masukkan harga beli baru" value="">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                                <div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-600 p-4 mb-4">
                                     <div class="flex">
                                         <div class="flex-shrink-0">
-                                            <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <svg class="h-5 w-5 text-yellow-400 dark:text-yellow-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                             </svg>
                                         </div>
                                         <div class="ml-3">
-                                            <p class="text-sm text-yellow-700">
+                                            <p class="text-sm text-yellow-700 dark:text-yellow-200">
                                                 Struk ini sudah memiliki data keuntungan. Klik tombol edit untuk mengubah harga beli.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div id="currentCuanInfo" class="bg-gray-50 p-4 rounded-lg">
-                                    <h3 class="font-medium text-lg mb-2">Keuntungan Tersimpan</h3>
-                                    <div class="py-2 px-4 bg-green-100 text-green-800 rounded-lg text-center font-medium">
+                                <div id="currentCuanInfo" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h3 class="font-medium text-lg mb-2 dark:text-gray-200">Keuntungan Tersimpan</h3>
+                                    <div class="py-2 px-4 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-lg text-center font-medium">
                                         Rp ${formatRupiah(cuanData.keuntungan || '0')}
                                     </div>
                                 </div>
 
-                                <div id="newCuanResult" class="bg-gray-50 p-4 rounded-lg mt-4 hidden">
-                                    <h3 class="font-medium text-lg mb-2">Keuntungan Baru</h3>
-                                    <div class="py-2 px-4 bg-blue-100 text-blue-800 rounded-lg text-center font-medium" id="newCuanValue">
+                                <div id="newCuanResult" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mt-4 hidden">
+                                    <h3 class="font-medium text-lg mb-2 dark:text-gray-200">Keuntungan Baru</h3>
+                                    <div class="py-2 px-4 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-lg text-center font-medium" id="newCuanValue">
                                         -
                                     </div>
                                 </div>`;
                             } else {
                                 // Jika belum ada data cuan, tampilkan input harga beli
                                 html += `
-                                        <div class="text-gray-600">Harga Beli (modal):</div>
+                                        <div class="text-gray-600 dark:text-gray-400">Harga Beli (modal):</div>
                                         <div class="font-medium">
-                                            <input type="text" id="hargaBeli" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                            <input type="text" id="hargaBeli" class="w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                                    placeholder="Masukkan harga beli (lebih rendah dari harga jual)" value="">
                                         </div>
                                     </div>
@@ -367,9 +368,9 @@
 
                             if (data.status) {
                                 html += `
-                                <div class="bg-gray-50 p-4 rounded-lg mt-4">
-                                    <h3 class="font-medium text-lg mb-2">Status Transaksi</h3>
-                                    <div class="py-2 px-4 ${data.status === 'SUKSES' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'} rounded-lg text-center font-medium">
+                                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mt-4">
+                                    <h3 class="font-medium text-lg mb-2 dark:text-gray-200">Status Transaksi</h3>
+                                    <div class="py-2 px-4 ${data.status === 'SUKSES' ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' : 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300'} rounded-lg text-center font-medium">
                                         ${data.status}
                                     </div>
                                 </div>`;
@@ -377,9 +378,9 @@
 
                             // Tambahkan div untuk menampilkan keuntungan (cuan)
                             html += `
-                                <div id="cuanResult" class="bg-gray-50 p-4 rounded-lg mt-4 ${checkResult.exists ? 'hidden' : 'hidden'}">
-                                    <h3 class="font-medium text-lg mb-2">Keuntungan (Cuan)</h3>
-                                    <div class="py-2 px-4 bg-blue-100 text-blue-800 rounded-lg text-center font-medium" id="cuanValue">
+                                <div id="cuanResult" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mt-4 ${checkResult.exists ? 'hidden' : 'hidden'}">
+                                    <h3 class="font-medium text-lg mb-2 dark:text-gray-200">Keuntungan (Cuan)</h3>
+                                    <div class="py-2 px-4 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-lg text-center font-medium" id="cuanValue">
                                         -
                                     </div>
                                 </div>`;
@@ -447,20 +448,26 @@
                                             // Tentukan warna berdasarkan hasil keuntungan
                                             let bgColor = 'bg-blue-100';
                                             let textColor = 'text-blue-800';
+                                            let darkBgColor = 'dark:bg-blue-900/50';
+                                            let darkTextColor = 'dark:text-blue-300';
 
                                             if (keuntungan > 0) {
                                                 bgColor = 'bg-green-100';
                                                 textColor = 'text-green-800';
+                                                darkBgColor = 'dark:bg-green-900/50';
+                                                darkTextColor = 'dark:text-green-300';
                                             } else if (keuntungan < 0) {
                                                 bgColor = 'bg-red-100';
                                                 textColor = 'text-red-800';
+                                                darkBgColor = 'dark:bg-red-900/50';
+                                                darkTextColor = 'dark:text-red-300';
                                             }
 
                                             // Tampilkan div hasil
                                             cuanResult.classList.remove('hidden');
 
                                             // Update tampilan
-                                            cuanValue.className = `py-2 px-4 ${bgColor} ${textColor} rounded-lg text-center font-medium`;
+                                            cuanValue.className = `py-2 px-4 ${bgColor} ${darkBgColor} ${textColor} ${darkTextColor} rounded-lg text-center font-medium`;
                                             cuanValue.textContent = `Rp ${formattedKeuntungan}`;
 
                                             // Tampilkan tombol simpan keuntungan
@@ -474,6 +481,7 @@
                                 if (simpanCuanBtn) {
                                     simpanCuanBtn.addEventListener('click', function() {
                                         // Ambil nilai harga beli yang diinput
+                                        const hargaBeliInput = document.getElementById('hargaBeli');
                                         const hargaBeliStr = hargaBeliInput.value.replace(/\D/g, '');
                                         const hargaBeli = parseInt(hargaBeliStr || 0);
 
@@ -608,20 +616,26 @@
                                             // Tentukan warna berdasarkan hasil keuntungan
                                             let bgColor = 'bg-blue-100';
                                             let textColor = 'text-blue-800';
+                                            let darkBgColor = 'dark:bg-blue-900/50';
+                                            let darkTextColor = 'dark:text-blue-300';
 
                                             if (keuntungan > 0) {
                                                 bgColor = 'bg-green-100';
                                                 textColor = 'text-green-800';
+                                                darkBgColor = 'dark:bg-green-900/50';
+                                                darkTextColor = 'dark:text-green-300';
                                             } else if (keuntungan < 0) {
                                                 bgColor = 'bg-red-100';
                                                 textColor = 'text-red-800';
+                                                darkBgColor = 'dark:bg-red-900/50';
+                                                darkTextColor = 'dark:text-red-300';
                                             }
 
                                             // Tampilkan div hasil
                                             newCuanResult.classList.remove('hidden');
 
                                             // Update tampilan
-                                            newCuanValue.className = `py-2 px-4 ${bgColor} ${textColor} rounded-lg text-center font-medium`;
+                                            newCuanValue.className = `py-2 px-4 ${bgColor} ${darkBgColor} ${textColor} ${darkTextColor} rounded-lg text-center font-medium`;
                                             newCuanValue.textContent = `Rp ${formattedKeuntungan}`;
 
                                             // Tampilkan tombol simpan keuntungan
@@ -705,7 +719,7 @@
                         })
                         .catch(error => {
                             document.getElementById('financialContent').innerHTML = `
-                                <div class="bg-red-100 text-red-700 p-4 rounded-lg">
+                                <div class="bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 p-4 rounded-lg">
                                     <p>Error: ${error.message}</p>
                                 </div>
                             `;
@@ -778,18 +792,18 @@
             const fieldId = 'field_' + Date.now();
 
             const fieldDiv = document.createElement('div');
-            fieldDiv.className = 'bg-gray-50 p-4 rounded-lg border border-gray-200 group';
+            fieldDiv.className = 'bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group';
             fieldDiv.innerHTML = `
                 <div class="flex items-start justify-between">
                     <div class="flex-grow">
                         <div class="mb-2">
-                            <div class="field-label-display text-sm font-medium text-gray-700 cursor-pointer hover:text-blue-600" onclick="editFieldLabel(this)">
+                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" onclick="editFieldLabel(this)">
                                 ${label || 'Klik untuk menambah nama field'}${isRequired ? '<span class="text-red-500"> *</span>' : ''}
                             </div>
                             <input type="text"
                                 placeholder="Nama Field"
                                 value="${label}"
-                                class="field-label hidden block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                 onblur="updateFieldLabel(this)"
                                 onkeypress="handleFieldLabelKeyPress(event, this)"
                                 data-required="${isRequired}">
@@ -798,12 +812,12 @@
                             <input type="text"
                                 placeholder="Value"
                                 value="${value}"
-                                class="field-value block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                 ${isRequired ? 'required' : ''}>
                         </div>
                     </div>
                     <button type="button"
-                        class="delete-field ml-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                        class="delete-field ml-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
                         onclick="deleteField(this)">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -836,13 +850,13 @@
                         fieldDiv.className = 'mb-4';
 
                         const label = document.createElement('label');
-                        label.className = 'block text-gray-700 text-sm font-bold mb-2';
+                        label.className = 'block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2';
                         label.textContent = field.label;
 
                         const input = document.createElement('input');
                         input.type = field.type;
                         input.name = `fields[${field.name}]`;
-                        input.className = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline';
+                        input.className = 'shadow appearance-none border dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline';
                         input.required = field.is_required;
 
                         fieldDiv.appendChild(label);

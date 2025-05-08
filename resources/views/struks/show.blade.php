@@ -1,14 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight flex items-center">
-                <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex items-center">
                 {{ __('Detail Struk') }}
             </h2>
             <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center shadow-md transition-all duration-300">
+                <button @click="open = !open" class="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 flex items-center shadow-md transition-all duration-300">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                     </svg>
@@ -17,9 +14,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </button>
-                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
+                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50">
                     <div class="py-1">
-                        <button onclick="printStruk()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                        <button onclick="printStruk()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
@@ -27,7 +24,7 @@
                                 Cetak ke Printer
                             </div>
                         </button>
-                        <button onclick="exportToJPG()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                        <button onclick="exportToJPG()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -35,7 +32,7 @@
                                 Simpan sebagai JPG
                             </div>
                         </button>
-                        <button onclick="captureScreenshot()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                        <button onclick="captureScreenshot()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
@@ -44,7 +41,7 @@
                                 Ambil Screenshot
                             </div>
                         </button>
-                        <button onclick="exportToPDF()" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                        <button onclick="exportToPDF()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
@@ -58,10 +55,10 @@
         </div>
     </x-slot>
 
-    <div class="py-6 bg-gray-50">
+    <div class="py-6 bg-gray-50 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-200">
                     <!-- Untuk Diprint -->
                     <div id="printable-area" class="mx-auto max-w-lg">
                         <!-- Header Transaksi dengan Efek Gradien -->
@@ -84,31 +81,31 @@
                         </div>
 
                         <!-- Card Utama -->
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-6 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300">
                             <!-- Produk dan Harga - Bagian Paling Penting -->
-                            <div class="bg-gradient-to-b from-gray-50 to-white p-6 border-b border-gray-100">
+                            <div class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-800 p-6 border-b border-gray-100 dark:border-gray-700">
                                 <div class="flex justify-between items-center mb-4">
                                     <div class="flex items-center">
-                                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg mr-3">
+                                            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                                             </svg>
                                         </div>
-                                        <span class="font-semibold text-lg text-gray-700">Produk</span>
+                                        <span class="font-semibold text-lg text-gray-700 dark:text-gray-300">Produk</span>
                                     </div>
-                                    <span class="text-lg bg-gray-100 py-1 px-3 rounded-lg">{{ $struk->getValue('produk') }}</span>
+                                    <span class="text-lg bg-gray-100 dark:bg-gray-700 py-1 px-3 rounded-lg dark:text-gray-300">{{ $struk->getValue('produk') }}</span>
                                 </div>
 
                                 <div class="flex justify-between items-center">
                                     <div class="flex items-center">
-                                        <div class="bg-green-100 p-2 rounded-lg mr-3">
-                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-green-100 dark:bg-green-900 p-2 rounded-lg mr-3">
+                                            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
                                         </div>
-                                        <span class="font-semibold text-lg text-gray-700">Harga</span>
+                                        <span class="font-semibold text-lg text-gray-700 dark:text-gray-300">Harga</span>
                                     </div>
-                                    <span class="text-lg font-bold bg-green-100 text-green-700 py-1 px-3 rounded-lg">
+                                    <span class="text-lg font-bold bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-400 py-1 px-3 rounded-lg">
                                         <?php
                                             // Hapus karakter non-angka, pastikan yang ditampilkan adalah angka saja
                                             $harga = preg_replace('/[^0-9]/', '', $struk->getValue('harga'));
@@ -124,58 +121,58 @@
                             <!-- Detail Transaksi Lainnya -->
                             <div class="p-6 space-y-4">
                                 @if($struk->getValue('id_transaksi'))
-                                <div class="flex justify-between items-center border-b border-gray-100 pb-3 hover:bg-gray-50 p-2 rounded transition-colors">
+                                <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                     <div class="flex items-center">
-                                        <div class="bg-blue-50 p-1.5 rounded-lg mr-3">
-                                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-blue-50 dark:bg-blue-900 p-1.5 rounded-lg mr-3">
+                                            <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
                                             </svg>
                                         </div>
-                                        <span class="text-gray-600">ID Transaksi</span>
+                                        <span class="text-gray-600 dark:text-gray-400">ID Transaksi</span>
                                     </div>
-                                    <span class="font-medium">{{ $struk->getValue('id_transaksi') }}</span>
+                                    <span class="font-medium dark:text-gray-300">{{ $struk->getValue('id_transaksi') }}</span>
                                 </div>
                                 @endif
 
                                 @if($struk->getValue('nomor_hp'))
-                                <div class="flex justify-between items-center border-b border-gray-100 pb-3 hover:bg-gray-50 p-2 rounded transition-colors">
+                                <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                     <div class="flex items-center">
-                                        <div class="bg-blue-50 p-1.5 rounded-lg mr-3">
-                                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-blue-50 dark:bg-blue-900 p-1.5 rounded-lg mr-3">
+                                            <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                                             </svg>
                                         </div>
-                                        <span class="text-gray-600">Nomor HP</span>
+                                        <span class="text-gray-600 dark:text-gray-400">Nomor HP</span>
                                     </div>
-                                    <span class="font-medium">{{ $struk->getValue('nomor_hp') }}</span>
+                                    <span class="font-medium dark:text-gray-300">{{ $struk->getValue('nomor_hp') }}</span>
                                 </div>
                                 @endif
 
                                 @if($struk->getValue('pembayaran'))
-                                <div class="flex justify-between items-center border-b border-gray-100 pb-3 hover:bg-gray-50 p-2 rounded transition-colors">
+                                <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                     <div class="flex items-center">
-                                        <div class="bg-blue-50 p-1.5 rounded-lg mr-3">
-                                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-blue-50 dark:bg-blue-900 p-1.5 rounded-lg mr-3">
+                                            <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                             </svg>
                                         </div>
-                                        <span class="text-gray-600">Pembayaran</span>
+                                        <span class="text-gray-600 dark:text-gray-400">Pembayaran</span>
                                     </div>
-                                    <span class="font-medium">{{ $struk->getValue('pembayaran') }}</span>
+                                    <span class="font-medium dark:text-gray-300">{{ $struk->getValue('pembayaran') }}</span>
                                 </div>
                                 @endif
 
                                 @if($struk->getValue('status'))
-                                <div class="flex justify-between items-center border-b border-gray-100 pb-3 hover:bg-gray-50 p-2 rounded transition-colors">
+                                <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                     <div class="flex items-center">
-                                        <div class="bg-blue-50 p-1.5 rounded-lg mr-3">
-                                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-blue-50 dark:bg-blue-900 p-1.5 rounded-lg mr-3">
+                                            <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
                                         </div>
-                                        <span class="text-gray-600">Status</span>
+                                        <span class="text-gray-600 dark:text-gray-400">Status</span>
                                     </div>
-                                    <span class="px-3 py-1 rounded-full font-medium text-sm {{ $struk->getValue('status') == 'SUKSES' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }} shadow-sm">
+                                    <span class="px-3 py-1 rounded-full font-medium text-sm {{ $struk->getValue('status') == 'SUKSES' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' }} shadow-sm">
                                         {{ $struk->getValue('status') }}
                                     </span>
                                 </div>
@@ -188,16 +185,16 @@
                                     @endphp
 
                                     @if(!empty($value) && !in_array(strtolower($label), $skipFields))
-                                    <div class="flex justify-between items-center border-b border-gray-100 pb-3 hover:bg-gray-50 p-2 rounded transition-colors">
+                                    <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                         <div class="flex items-center">
-                                            <div class="bg-blue-50 p-1.5 rounded-lg mr-3">
-                                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="bg-blue-50 dark:bg-blue-900 p-1.5 rounded-lg mr-3">
+                                                <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
                                             </div>
-                                            <span class="text-gray-600">{{ $label }}</span>
+                                            <span class="text-gray-600 dark:text-gray-400">{{ $label }}</span>
                                         </div>
-                                        <span class="font-medium text-right">{{ Str::limit($value, 15, '...') }}</span>
+                                        <span class="font-medium text-right dark:text-gray-300">{{ Str::limit($value, 15, '...') }}</span>
                                     </div>
                                     @endif
                                 @endforeach
@@ -206,32 +203,32 @@
 
                         <!-- Footer Tanda Terima -->
                         <div class="text-center mt-8 pt-4">
-                            <div class="inline-block border-2 border-dashed border-blue-200 rounded-lg p-4 mb-4 bg-blue-50/50">
-                                <svg class="w-8 h-8 text-green-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="inline-block border-2 border-dashed border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4 bg-blue-50/50 dark:bg-blue-900/30">
+                                <svg class="w-8 h-8 text-green-500 dark:text-green-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                <p class="text-gray-700 font-medium">Transaksi Berhasil</p>
+                                <p class="text-gray-700 dark:text-gray-300 font-medium">Transaksi Berhasil</p>
                             </div>
 
-                            <p class="text-gray-600 font-medium">Terima kasih telah bertransaksi di</p>
+                            <p class="text-gray-600 dark:text-gray-400 font-medium">Terima kasih telah bertransaksi di</p>
                             <div class="flex justify-center items-center mt-2 mb-3">
                                 <img src="{{ asset('images/logo.png') }}" alt="GannStore Logo" class="h-7 w-auto mr-2 drop-shadow-sm">
-                                <p class="text-blue-600 font-bold text-lg">GannStore</p>
+                                <p class="text-blue-600 dark:text-blue-400 font-bold text-lg">GannStore</p>
                             </div>
-                            <p class="text-gray-500 text-sm">Kunjungi kami kembali</p>
-                            <p class="text-gray-400 text-xs mt-2">{{ $struk->getValue('tanggal') }}</p>
+                            <p class="text-gray-500 dark:text-gray-500 text-sm">Kunjungi kami kembali</p>
+                            <p class="text-gray-400 dark:text-gray-600 text-xs mt-2">{{ $struk->getValue('tanggal') }}</p>
                         </div>
                     </div>
 
                     <!-- Tombol navigasi non-printable -->
                     <div class="mt-8 flex justify-end print:hidden">
-                        <a href="{{ route('dashboard') }}" class="bg-gray-100 text-gray-700 px-5 py-2 rounded-lg shadow-sm hover:bg-gray-200 transition-all duration-200 mr-3 flex items-center">
+                        <a href="{{ route('dashboard') }}" class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-5 py-2 rounded-lg shadow-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 mr-3 flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>
                             Kembali
                         </a>
-                        <a href="{{ route('struks.edit', $struk) }}" class="bg-blue-500 text-white px-5 py-2 rounded-lg shadow-sm hover:bg-blue-600 transition-all duration-200 flex items-center">
+                        <a href="{{ route('struks.edit', $struk) }}" class="bg-blue-500 dark:bg-blue-600 text-white px-5 py-2 rounded-lg shadow-sm hover:bg-blue-600 dark:hover:bg-blue-700 transition-all duration-200 flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15.414a2 2 0 01-2.828 0l-4.243-4.243a2 2 0 010-2.828 2 2 0 012.828 0l4.243 4.243"></path>
                             </svg>

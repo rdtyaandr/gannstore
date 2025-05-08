@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Keuntungan') }}
         </h2>
     </x-slot>
@@ -14,16 +14,16 @@
             </div>
 
             <!-- Riwayat Keuntungan -->
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Riwayat Keuntungan</h2>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Riwayat Keuntungan</h2>
 
                 @if ($cuanData->isEmpty())
-                    <p class="text-gray-600">Belum ada data keuntungan yang tercatat.</p>
+                    <p class="text-gray-600 dark:text-gray-400">Belum ada data keuntungan yang tercatat.</p>
                 @else
                     <div class="overflow-x-auto">
                         <table class="w-full table-auto">
                             <thead>
-                                <tr class="bg-gray-200 text-gray-700">
+                                <tr class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                     <th class="p-3 text-left">No</th>
                                     <th class="p-3 text-left">Produk</th>
                                     <th class="p-3 text-left">Tanggal</th>
@@ -34,13 +34,13 @@
                             </thead>
                             <tbody>
                                 @foreach ($cuanData as $index => $cuan)
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="p-3">{{ $loop->iteration }}</td>
-                                        <td class="p-3">{{ $cuan->produk }}</td>
-                                        <td class="p-3">{{ $cuan->tanggal }}</td>
-                                        <td class="p-3">Rp {{ number_format($cuan->harga_jual, 0, ',', '.') }}</td>
-                                        <td class="p-3">Rp {{ number_format($cuan->harga_beli, 0, ',', '.') }}</td>
-                                        <td class="p-3 font-medium {{ $cuan->keuntungan > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="p-3 dark:text-gray-300">{{ $loop->iteration }}</td>
+                                        <td class="p-3 dark:text-gray-300">{{ $cuan->produk }}</td>
+                                        <td class="p-3 dark:text-gray-300">{{ $cuan->tanggal }}</td>
+                                        <td class="p-3 dark:text-gray-300">Rp {{ number_format($cuan->harga_jual, 0, ',', '.') }}</td>
+                                        <td class="p-3 dark:text-gray-300">Rp {{ number_format($cuan->harga_beli, 0, ',', '.') }}</td>
+                                        <td class="p-3 font-medium {{ $cuan->keuntungan > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                             Rp {{ number_format($cuan->keuntungan, 0, ',', '.') }}
                                         </td>
                                     </tr>

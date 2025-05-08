@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Edit Struk') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-200">
                     <form action="{{ route('struks.update', $struk) }}" method="POST" id="editForm">
                         @csrf
                         @method('PUT')
@@ -31,17 +31,17 @@
 
                                     <!-- Field Wajib -->
                                     @foreach($requiredFields as $field)
-                                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 group">
+                                        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group">
                                             <div class="flex items-start justify-between">
                                                 <div class="flex-grow">
                                                     <div class="mb-2">
-                                                        <div class="field-label-display text-sm font-medium text-gray-700 cursor-pointer hover:text-blue-600" onclick="editFieldLabel(this)">
+                                                        <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" onclick="editFieldLabel(this)">
                                                             {{ $field->label }} <span class="text-red-500">*</span>
                                                         </div>
                                                         <input type="text"
                                                             placeholder="Nama Field"
                                                             value="{{ $field->label }}"
-                                                            class="field-label hidden block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                            class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                                             onblur="updateFieldLabel(this)"
                                                             onkeypress="handleFieldLabelKeyPress(event, this)"
                                                             data-required="true">
@@ -51,7 +51,7 @@
                                                             placeholder="Value"
                                                             name="data[{{ $field->label }}]"
                                                             value="{{ old('data.' . $field->label, $struk->getValue($field->name) ?? ($strukData[$field->label] ?? '')) }}"
-                                                            class="field-value block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                            class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                                             required>
                                                     </div>
                                                 </div>
@@ -60,8 +60,8 @@
                                     @endforeach
 
                                     <!-- Field Opsional -->
-                                    <div class="mt-6 mb-3 pt-3 border-t border-gray-200">
-                                        <h4 class="text-md font-medium text-gray-700">Informasi Tambahan</h4>
+                                    <div class="mt-6 mb-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-md font-medium text-gray-700 dark:text-gray-300">Informasi Tambahan</h4>
                                     </div>
 
                                     @foreach($optionalFields as $field)
@@ -70,17 +70,17 @@
                                         @endphp
 
                                         @if($fieldValue)
-                                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 group">
+                                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group">
                                                 <div class="flex items-start justify-between">
                                                     <div class="flex-grow">
                                                         <div class="mb-2">
-                                                            <div class="field-label-display text-sm font-medium text-gray-700 cursor-pointer hover:text-blue-600" onclick="editFieldLabel(this)">
+                                                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" onclick="editFieldLabel(this)">
                                                                 {{ $field->label }}
                                                             </div>
                                                             <input type="text"
                                                                 placeholder="Nama Field"
                                                                 value="{{ $field->label }}"
-                                                                class="field-label hidden block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                                class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                                                 onblur="updateFieldLabel(this)"
                                                                 onkeypress="handleFieldLabelKeyPress(event, this)"
                                                                 data-required="false">
@@ -90,11 +90,11 @@
                                                                 placeholder="Value"
                                                                 name="data[{{ $field->label }}]"
                                                                 value="{{ old('data.' . $field->label, $fieldValue) }}"
-                                                                class="field-value block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                                                class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
                                                         </div>
                                                     </div>
                                                     <button type="button"
-                                                        class="delete-field ml-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
                                                         onclick="deleteField(this)">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -112,17 +112,17 @@
                                         @endphp
 
                                         @if(!$fieldExists && !empty($value))
-                                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 group">
+                                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group">
                                                 <div class="flex items-start justify-between">
                                                     <div class="flex-grow">
                                                         <div class="mb-2">
-                                                            <div class="field-label-display text-sm font-medium text-gray-700 cursor-pointer hover:text-blue-600" onclick="editFieldLabel(this)">
+                                                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" onclick="editFieldLabel(this)">
                                                                 {{ $label }}
                                                             </div>
                                                             <input type="text"
                                                                 placeholder="Nama Field"
                                                                 value="{{ $label }}"
-                                                                class="field-label hidden block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                                class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                                                 onblur="updateFieldLabel(this)"
                                                                 onkeypress="handleFieldLabelKeyPress(event, this)"
                                                                 data-required="false">
@@ -132,11 +132,11 @@
                                                                 placeholder="Value"
                                                                 name="data[{{ $label }}]"
                                                                 value="{{ old('data.' . $label, $value) }}"
-                                                                class="field-value block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                                                class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
                                                         </div>
                                                     </div>
                                                     <button type="button"
-                                                        class="delete-field ml-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
                                                         onclick="deleteField(this)">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -148,7 +148,7 @@
                                     @endforeach
                                 </div>
 
-                                <button id="addFieldBtn" type="button" class="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center">
+                                <button id="addFieldBtn" type="button" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center justify-center">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                     </svg>
@@ -158,8 +158,8 @@
                         </div>
 
                         <div class="flex justify-end space-x-2 mt-6">
-                            <a href="{{ route('dashboard') }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Batal</a>
-                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan Perubahan</button>
+                            <a href="{{ route('dashboard') }}" class="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-600">Batal</a>
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">Simpan Perubahan</button>
                         </div>
                     </form>
                 </div>
@@ -182,16 +182,16 @@
             const fieldId = 'field_' + Date.now();
 
             const fieldDiv = document.createElement('div');
-            fieldDiv.className = 'bg-gray-50 p-4 rounded-lg border border-gray-200 group';
+            fieldDiv.className = 'bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 group';
             fieldDiv.innerHTML = `
                 <div class="flex items-start justify-between">
                     <div class="flex-grow">
                         <div class="mb-2">
-                            <div class="field-label-display text-sm font-medium text-gray-700 cursor-pointer hover:text-blue-600" onclick="editFieldLabel(this)">${label || 'Klik untuk menambah nama field'}</div>
+                            <div class="field-label-display text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" onclick="editFieldLabel(this)">${label || 'Klik untuk menambah nama field'}</div>
                             <input type="text"
                                    placeholder="Nama Field"
                                    value="${label}"
-                                   class="field-label hidden block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="field-label hidden block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300"
                                    onblur="updateFieldLabel(this)"
                                    onkeypress="handleFieldLabelKeyPress(event, this)"
                                    data-required="false">
@@ -200,11 +200,11 @@
                             <input type="text"
                                    placeholder="Value"
                                    value="${value}"
-                                   class="field-value block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                   class="field-value block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-300">
                         </div>
                     </div>
                     <button type="button"
-                            class="delete-field ml-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                            class="delete-field ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
                             onclick="deleteField(this)">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>

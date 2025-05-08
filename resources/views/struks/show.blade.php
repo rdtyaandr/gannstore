@@ -14,39 +14,49 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </button>
-                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50">
+                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50">
                     <div class="py-1">
-                        <button onclick="printStruk()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
+                        <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                            <span class="font-medium text-sm text-gray-700 dark:text-gray-300">Cetak Struk</span>
+                        </div>
+
+                        <button onclick="cetakStrukTerang()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                                 </svg>
-                                Cetak ke Printer
+                                Cetak Mode Terang
                             </div>
                         </button>
-                        <button onclick="exportToJPG()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
+
+                        <button onclick="cetakStrukGelap()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                                </svg>
+                                Cetak Mode Gelap
+                            </div>
+                        </button>
+
+                        <div class="px-4 py-2 border-t border-b border-gray-100 dark:border-gray-700">
+                            <span class="font-medium text-sm text-gray-700 dark:text-gray-300">Simpan Struk</span>
+                        </div>
+
+                        <button onclick="simpanGambarTerang()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                Simpan sebagai JPG
+                                Simpan Gambar Terang
                             </div>
                         </button>
-                        <button onclick="captureScreenshot()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
+
+                        <button onclick="simpanGambarGelap()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                Ambil Screenshot
-                            </div>
-                        </button>
-                        <button onclick="exportToPDF()" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                </svg>
-                                Simpan sebagai PDF
+                                Simpan Gambar Gelap
                             </div>
                         </button>
                     </div>
@@ -313,84 +323,117 @@
     @push('scripts')
     <!-- Library yang diperlukan untuk ekspor -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
-        // Tambahkan CSS khusus untuk ekspor
-        function addExportStyles(container) {
-            // Buat elemen style
-            const styleElement = document.createElement('style');
-            styleElement.textContent = `
-                .export-container * {
-                    font-family: Arial, sans-serif !important;
-                    box-sizing: border-box !important;
-                }
-                .export-container {
-                    width: 100%;
-                    max-width: 500px;
-                    margin: 0 auto;
-                    background-color: #ffffff;
-                    padding: 20px;
-                    box-shadow: none !important;
-                }
-                .export-container .bg-gradient-to-r {
-                    background: linear-gradient(to right, #3b82f6, #4f46e5) !important;
-                    color: #ffffff !important;
-                    padding: 20px !important;
-                    text-align: center !important;
-                    border-radius: 10px !important;
-                }
-                .export-container svg {
-                    display: inline-block !important;
-                    width: 20px !important;
-                    height: 20px !important;
-                    vertical-align: middle !important;
-                }
-                .export-container .flex {
-                    display: flex !important;
-                    justify-content: space-between !important;
-                    align-items: center !important;
-                    margin-bottom: 8px !important;
-                    padding-bottom: 5px !important;
-                }
-                .export-container .justify-center {
-                    justify-content: center !important;
-                }
-                .export-container .items-center {
-                    align-items: center !important;
-                }
-                .export-container .bg-green-100 {
-                    background-color: #d1fae5 !important;
-                    color: #047857 !important;
-                    padding: 3px 8px !important;
-                    border-radius: 6px !important;
-                }
-                .export-container .bg-blue-50 {
-                    background-color: #eff6ff !important;
-                    padding: 6px !important;
-                    border-radius: 6px !important;
-                }
-                .export-container .text-blue-500 {
-                    color: #3b82f6 !important;
-                }
-                .export-container .text-green-700 {
-                    color: #047857 !important;
-                }
-                .export-container .border-b {
-                    border-bottom: 1px solid #e5e7eb !important;
-                }
-                .export-container img {
-                    max-height: 40px !important;
-                }
-            `;
-
-            container.appendChild(styleElement);
-            container.classList.add('export-container');
-        }
-
-        function printStruk() {
-            const printContents = document.getElementById('printable-area').innerHTML;
+        // Fungsi untuk cetak struk dalam mode terang
+        function cetakStrukTerang() {
+            // Clone area yang akan dicetak
+            const printContents = document.getElementById('printable-area').cloneNode(true);
             const originalContents = document.body.innerHTML;
+
+            // Hapus kelas dark dan terapkan style terang
+            printContents.classList.remove('dark');
+
+            // Ubah semua elemen yang memiliki warna dark mode menjadi light mode
+            const allElements = printContents.querySelectorAll('*');
+            allElements.forEach(el => {
+                // Hapus dark classes
+                Array.from(el.classList).forEach(cls => {
+                    if (cls.startsWith('dark:')) {
+                        el.classList.remove(cls);
+                    }
+                });
+
+                // Ubah warna background element
+                if (el.classList.contains('bg-white') || el.classList.contains('bg-gray-50') || el.classList.contains('bg-gray-100')) {
+                    el.style.backgroundColor = 'white';
+                }
+                if (el.classList.contains('bg-blue-50')) {
+                    el.style.backgroundColor = '#eff6ff'; // blue-50
+                }
+                if (el.classList.contains('bg-green-100')) {
+                    el.style.backgroundColor = '#dcfce7'; // green-100
+                }
+                if (el.classList.contains('bg-blue-100')) {
+                    el.style.backgroundColor = '#dbeafe'; // blue-100
+                }
+
+                // Ubah warna text
+                if (el.classList.contains('text-gray-700') || el.classList.contains('text-gray-800') || el.classList.contains('text-gray-900')) {
+                    el.style.color = '#111827'; // gray-900
+                }
+                if (el.classList.contains('text-gray-600')) {
+                    el.style.color = '#4b5563'; // gray-600
+                }
+                if (el.classList.contains('text-gray-400')) {
+                    el.style.color = '#9ca3af'; // gray-400
+                }
+                if (el.classList.contains('text-blue-600')) {
+                    el.style.color = '#2563eb'; // blue-600
+                }
+                if (el.classList.contains('text-blue-500')) {
+                    el.style.color = '#3b82f6'; // blue-500
+                }
+                if (el.classList.contains('text-green-700')) {
+                    el.style.color = '#15803d'; // green-700
+                }
+                if (el.classList.contains('text-green-600')) {
+                    el.style.color = '#16a34a'; // green-600
+                }
+                if (el.classList.contains('text-white')) {
+                    el.style.color = '#ffffff'; // white
+                }
+
+                // SVG handling
+                if (el.tagName === 'svg') {
+                    el.style.display = 'inline-block';
+                    el.setAttribute('fill', 'none');
+
+                    // Atur warna stroke berdasarkan parent atau class
+                    if (el.classList.contains('text-blue-600') || el.parentElement?.classList.contains('text-blue-600')) {
+                        el.setAttribute('stroke', '#2563eb'); // blue-600
+                    } else if (el.classList.contains('text-blue-500') || el.parentElement?.classList.contains('text-blue-500')) {
+                        el.setAttribute('stroke', '#3b82f6'); // blue-500
+                    } else if (el.classList.contains('text-green-600') || el.parentElement?.classList.contains('text-green-600')) {
+                        el.setAttribute('stroke', '#16a34a'); // green-600
+                    } else if (el.classList.contains('text-green-500') || el.parentElement?.classList.contains('text-green-500')) {
+                        el.setAttribute('stroke', '#22c55e'); // green-500
+                    } else if (el.classList.contains('text-white') || el.parentElement?.classList.contains('text-white')) {
+                        el.setAttribute('stroke', '#ffffff'); // white
+                    } else {
+                        el.setAttribute('stroke', '#4b5563'); // gray-600 default
+                    }
+                }
+
+                // Perbaiki border
+                if (el.classList.contains('border-gray-100')) {
+                    el.style.borderColor = '#f3f4f6'; // gray-100
+                }
+                if (el.classList.contains('border-blue-200')) {
+                    el.style.borderColor = '#bfdbfe'; // blue-200
+                }
+                if (el.classList.contains('border-white')) {
+                    el.style.borderColor = '#ffffff'; // white
+                }
+
+                // Pastikan border dashed tetap dashed
+                if (el.classList.contains('border-dashed')) {
+                    el.style.borderStyle = 'dashed';
+                }
+            });
+
+            // Perbaiki khusus untuk efek gradient dan elemen tertentu
+            const gradientEl = printContents.querySelector('.bg-gradient-to-r');
+            if (gradientEl) {
+                gradientEl.style.background = 'linear-gradient(to right, #3b82f6, #4f46e5)';
+                gradientEl.style.color = '#ffffff';
+                const gradientChilds = gradientEl.querySelectorAll('*');
+                gradientChilds.forEach(child => {
+                    child.style.color = '#ffffff';
+                    if (child.tagName === 'svg') {
+                        child.setAttribute('stroke', '#ffffff');
+                    }
+                });
+            }
 
             // Buat style untuk print
             const printStyles = `
@@ -398,13 +441,83 @@
                     @media print {
                         body {
                             font-family: Arial, sans-serif;
-                            width: 80mm;
+                            width: 100%;
+                            max-width: 80mm;
                             margin: 0 auto;
                             padding: 5mm;
+                            background-color: white !important;
+                            color: black !important;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                            color-adjust: exact !important;
                         }
                         * {
                             box-sizing: border-box;
                         }
+
+                        /* Pengecualian untuk gradien dan elemen tertentu */
+                        .bg-gradient-to-r {
+                            background: linear-gradient(to right, #3b82f6, #4f46e5) !important;
+                            color: white !important;
+                        }
+                        .bg-gradient-to-r * {
+                            background-color: transparent !important;
+                            color: white !important;
+                        }
+                        .bg-gradient-to-r svg {
+                            stroke: white !important;
+                        }
+
+                        .bg-blue-100 {
+                            background-color: #dbeafe !important;
+                        }
+                        .bg-blue-50 {
+                            background-color: #eff6ff !important;
+                        }
+                        .bg-green-100 {
+                            background-color: #dcfce7 !important;
+                        }
+                        .bg-white, .bg-gray-50, .bg-gray-100 {
+                            background-color: white !important;
+                        }
+
+                        .text-blue-600, .text-blue-500, .text-blue-400 {
+                            color: #2563eb !important; /* blue-600 */
+                        }
+                        .text-green-600, .text-green-500, .text-green-400 {
+                            color: #16a34a !important; /* green-600 */
+                        }
+                        .text-green-700 {
+                            color: #15803d !important; /* green-700 */
+                        }
+                        .text-gray-900, .text-gray-800, .text-gray-700 {
+                            color: #111827 !important; /* gray-900 */
+                        }
+                        .text-gray-600 {
+                            color: #4b5563 !important; /* gray-600 */
+                        }
+                        .text-gray-400 {
+                            color: #9ca3af !important; /* gray-400 */
+                        }
+                        .text-white {
+                            color: white !important;
+                        }
+
+                        .border-gray-100 {
+                            border-color: #f3f4f6 !important; /* gray-100 */
+                        }
+                        .border-blue-200 {
+                            border-color: #bfdbfe !important; /* blue-200 */
+                        }
+                        .border-dashed {
+                            border-style: dashed !important;
+                        }
+
+                        /* Perbaikan border dashed */
+                        .border-dashed {
+                            border-style: dashed !important;
+                        }
+
                         h1, h2 {
                             font-size: 16px;
                             font-weight: bold;
@@ -416,13 +529,8 @@
                             max-height: 40px;
                             width: auto;
                         }
-                        .bg-gradient-to-r, .bg-white, .rounded-lg, .shadow-md {
-                            background: white !important;
-                            box-shadow: none !important;
-                            border: none !important;
-                        }
                         svg {
-                            display: none;
+                            display: inline-block !important;
                         }
                         .flex {
                             display: flex;
@@ -446,13 +554,10 @@
                         .text-sm, .text-xs {
                             font-size: 12px;
                         }
-                        .text-green-600, .text-yellow-600, .text-gray-700 {
-                            font-weight: bold;
-                        }
                         .text-center {
                             text-align: center;
                         }
-                        .mt-8, .mt-2, .mb-3 {
+                        .mt-8, .mt-2, .mb-3, .mb-4 {
                             margin-top: 15px;
                         }
                         .mr-2, .mr-3 {
@@ -461,377 +566,444 @@
                         .space-y-4 > * {
                             margin-bottom: 8px;
                         }
-                        .bg-green-100, .bg-yellow-100 {
-                            padding: 3px;
-                            border: 1px solid #ddd;
+                        .rounded-lg, .rounded-full, .rounded-xl {
+                            border-radius: 4px;
+                        }
+                        .p-6, .p-8, .p-4, .py-2, .px-4 {
+                            padding: 8px;
+                        }
+                        .inline-block {
+                            display: inline-block;
                         }
                     }
                 </style>
             `;
 
             // Ganti isi document untuk print
-            document.body.innerHTML = printStyles + printContents;
+            document.body.innerHTML = printStyles + printContents.outerHTML;
 
+            // Proses cetak
             window.print();
 
             // Kembalikan isi document seperti semula
             document.body.innerHTML = originalContents;
         }
 
-        // Fungsi untuk ekspor ke JPG yang diperbaiki
-        function exportToJPG() {
+        // Fungsi untuk cetak struk dalam mode gelap
+        function cetakStrukGelap() {
+            // Clone area yang akan dicetak
+            const printContents = document.getElementById('printable-area').cloneNode(true);
+            const originalContents = document.body.innerHTML;
+
+            // Tambahkan kelas dark dan terapkan style gelap
+            printContents.classList.add('dark');
+
+            // Ubah semua elemen menjadi dark mode
+            const allElements = printContents.querySelectorAll('*');
+            allElements.forEach(el => {
+                // Background
+                if (el.classList.contains('bg-white') || el.classList.contains('bg-gray-50') || el.classList.contains('bg-gray-100')) {
+                    el.style.backgroundColor = '#1f2937'; // gray-800
+                }
+                if (el.classList.contains('dark:bg-gray-800')) {
+                    el.style.backgroundColor = '#1f2937'; // gray-800
+                }
+                if (el.classList.contains('dark:bg-gray-700')) {
+                    el.style.backgroundColor = '#374151'; // gray-700
+                }
+                if (el.classList.contains('dark:bg-blue-900')) {
+                    el.style.backgroundColor = '#1e3a8a'; // blue-900
+                }
+                if (el.classList.contains('dark:bg-green-900')) {
+                    el.style.backgroundColor = '#14532d'; // green-900
+                }
+                if (el.classList.contains('dark:bg-blue-800')) {
+                    el.style.backgroundColor = '#1e40af'; // blue-800
+                }
+
+                // Text
+                if (el.classList.contains('text-gray-700') || el.classList.contains('text-gray-800') || el.classList.contains('text-gray-900')) {
+                    el.style.color = '#e5e7eb'; // gray-200
+                }
+                if (el.classList.contains('dark:text-gray-300')) {
+                    el.style.color = '#d1d5db'; // gray-300
+                }
+                if (el.classList.contains('dark:text-gray-400')) {
+                    el.style.color = '#9ca3af'; // gray-400
+                }
+                if (el.classList.contains('dark:text-gray-200')) {
+                    el.style.color = '#e5e7eb'; // gray-200
+                }
+                if (el.classList.contains('dark:text-blue-400')) {
+                    el.style.color = '#60a5fa'; // blue-400
+                }
+                if (el.classList.contains('dark:text-green-400')) {
+                    el.style.color = '#4ade80'; // green-400
+                }
+                if (el.classList.contains('text-white')) {
+                    el.style.color = '#ffffff'; // white
+                }
+
+                // Border
+                if (el.classList.contains('dark:border-gray-700')) {
+                    el.style.borderColor = '#374151'; // gray-700
+                }
+                if (el.classList.contains('dark:border-blue-800')) {
+                    el.style.borderColor = '#1e40af'; // blue-800
+                }
+                if (el.classList.contains('border-white')) {
+                    el.style.borderColor = '#ffffff'; // white
+                }
+
+                // SVG handling
+                if (el.tagName === 'svg') {
+                    el.style.display = 'inline-block';
+                    el.setAttribute('fill', 'none');
+
+                    // Atur warna stroke berdasarkan parent atau class
+                    if (el.classList.contains('dark:text-blue-400') || el.parentElement?.classList.contains('dark:text-blue-400')) {
+                        el.setAttribute('stroke', '#60a5fa'); // blue-400
+                    } else if (el.classList.contains('dark:text-green-400') || el.parentElement?.classList.contains('dark:text-green-400')) {
+                        el.setAttribute('stroke', '#4ade80'); // green-400
+                    } else if (el.classList.contains('text-white') || el.parentElement?.classList.contains('text-white')) {
+                        el.setAttribute('stroke', '#ffffff'); // white
+                    } else {
+                        el.setAttribute('stroke', '#d1d5db'); // gray-300 default
+                    }
+                }
+            });
+
+            // Perbaiki khusus untuk efek gradient dan elemen tertentu
+            const gradientEl = printContents.querySelector('.bg-gradient-to-r');
+            if (gradientEl) {
+                gradientEl.style.background = 'linear-gradient(to right, #3b82f6, #4f46e5)';
+                gradientEl.style.color = '#ffffff';
+                const gradientChilds = gradientEl.querySelectorAll('*');
+                gradientChilds.forEach(child => {
+                    child.style.color = '#ffffff';
+                    if (child.tagName === 'svg') {
+                        child.setAttribute('stroke', '#ffffff');
+                    }
+                });
+            }
+
+            // Buat style untuk print
+            const printStyles = `
+                <style>
+                    @media print {
+                        body {
+                            font-family: Arial, sans-serif;
+                            width: 100%;
+                            max-width: 80mm;
+                            margin: 0 auto;
+                            padding: 5mm;
+                            background-color: #1f2937 !important;
+                            color: #e5e7eb !important;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                        }
+                        * {
+                            box-sizing: border-box;
+                        }
+
+                        /* Pengecualian untuk gradien dan elemen tertentu */
+                        .bg-gradient-to-r {
+                            background: linear-gradient(to right, #3b82f6, #4f46e5) !important;
+                            color: white !important;
+                        }
+                        .bg-gradient-to-r * {
+                            background-color: transparent !important;
+                            color: white !important;
+                        }
+                        .bg-gradient-to-r svg {
+                            stroke: white !important;
+                        }
+
+                        .bg-white, .bg-gray-50, .bg-gray-100, .dark\\:bg-gray-800 {
+                            background-color: #1f2937 !important; /* gray-800 */
+                        }
+                        .dark\\:bg-gray-700 {
+                            background-color: #374151 !important; /* gray-700 */
+                        }
+                        .dark\\:bg-blue-900 {
+                            background-color: #1e3a8a !important; /* blue-900 */
+                        }
+                        .dark\\:bg-green-900 {
+                            background-color: #14532d !important; /* green-900 */
+                        }
+                        .dark\\:bg-blue-800 {
+                            background-color: #1e40af !important; /* blue-800 */
+                        }
+
+                        .text-white {
+                            color: white !important;
+                        }
+                        .text-gray-900, .text-gray-800, .text-gray-700, .dark\\:text-gray-200 {
+                            color: #e5e7eb !important; /* gray-200 */
+                        }
+                        .dark\\:text-gray-300 {
+                            color: #d1d5db !important; /* gray-300 */
+                        }
+                        .dark\\:text-gray-400, .text-gray-600 {
+                            color: #9ca3af !important; /* gray-400 */
+                        }
+                        .dark\\:text-blue-400 {
+                            color: #60a5fa !important; /* blue-400 */
+                        }
+                        .dark\\:text-green-400 {
+                            color: #4ade80 !important; /* green-400 */
+                        }
+
+                        .dark\\:border-gray-700 {
+                            border-color: #374151 !important; /* gray-700 */
+                        }
+                        .dark\\:border-blue-800 {
+                            border-color: #1e40af !important; /* blue-800 */
+                        }
+
+                        /* Perbaikan border dashed */
+                        .border-dashed {
+                            border-style: dashed !important;
+                        }
+
+                        h1, h2 {
+                            font-size: 16px;
+                            font-weight: bold;
+                            margin-bottom: 10px;
+                            text-align: center;
+                            color: #e5e7eb !important;
+                        }
+                        img {
+                            display: inline-block;
+                            max-height: 40px;
+                            width: auto;
+                        }
+                        svg {
+                            display: inline-block !important;
+                        }
+                        .flex {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 8px;
+                            border-bottom: 1px dotted #4b5563;
+                            padding-bottom: 5px;
+                        }
+                        .justify-center {
+                            justify-content: center;
+                        }
+                        .items-center {
+                            align-items: center;
+                        }
+                        .font-medium, .font-semibold, .font-bold {
+                            font-weight: bold;
+                        }
+                        .text-lg, .text-xl, .text-2xl, .text-3xl {
+                            font-size: 14px;
+                        }
+                        .text-sm, .text-xs {
+                            font-size: 12px;
+                        }
+                        .text-center {
+                            text-align: center;
+                        }
+                        .mt-8, .mt-2, .mb-3, .mb-4 {
+                            margin-top: 15px;
+                        }
+                        .mr-2, .mr-3 {
+                            margin-right: 5px;
+                        }
+                        .space-y-4 > * {
+                            margin-bottom: 8px;
+                        }
+                        .rounded-lg, .rounded-full, .rounded-xl {
+                            border-radius: 4px;
+                        }
+                        .p-6, .p-8, .p-4, .py-2, .px-4 {
+                            padding: 8px;
+                        }
+                        .inline-block {
+                            display: inline-block;
+                        }
+                    }
+                </style>
+            `;
+
+            // Ganti isi document untuk print
+            document.body.innerHTML = printStyles + printContents.outerHTML;
+
+            // Proses cetak
+            window.print();
+
+            // Kembalikan isi document seperti semula
+            document.body.innerHTML = originalContents;
+        }
+
+        // Fungsi untuk simpan gambar terang
+        function simpanGambarTerang() {
             // Tampilkan indikator loading
-            const loadingIndicator = document.createElement('div');
-            loadingIndicator.style.position = 'fixed';
-            loadingIndicator.style.top = '0';
-            loadingIndicator.style.left = '0';
-            loadingIndicator.style.width = '100%';
-            loadingIndicator.style.height = '100%';
-            loadingIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
-            loadingIndicator.style.display = 'flex';
-            loadingIndicator.style.justifyContent = 'center';
-            loadingIndicator.style.alignItems = 'center';
-            loadingIndicator.style.zIndex = '9999';
-            loadingIndicator.innerHTML = '<div style="background-color: white; padding: 20px; border-radius: 10px;"><p style="color: #333; font-weight: bold;">Memproses gambar, mohon tunggu...</p></div>';
-            document.body.appendChild(loadingIndicator);
+            showLoadingIndicator("Membuat gambar terang...");
 
-            // Buat clone dari area yang akan diambil gambarnya
-            const element = document.getElementById('printable-area');
-            const clone = element.cloneNode(true);
-
-            // Buat container khusus untuk ekspor
+            // Siapkan konten struk dalam mode terang
             const container = document.createElement('div');
+            container.style.width = '500px';
+            container.style.padding = '20px';
+            container.style.backgroundColor = 'white';
             container.style.position = 'absolute';
             container.style.left = '-9999px';
             container.style.top = '-9999px';
-            container.style.width = '500px'; // Tetapkan lebar tetap
-            container.style.backgroundColor = '#ffffff';
-            container.style.padding = '20px';
-            container.style.border = 'none';
-            container.style.overflow = 'hidden';
-            container.appendChild(clone);
+
+            // Clone struk dan terapkan mode terang
+            const strukContent = document.getElementById('printable-area').cloneNode(true);
+            strukContent.classList.remove('dark');
+
+            // Ubah semua elemen menjadi light mode
+            const allElements = strukContent.querySelectorAll('*');
+            allElements.forEach(el => {
+                // Hapus dark classes
+                Array.from(el.classList).forEach(cls => {
+                    if (cls.startsWith('dark:')) {
+                        el.classList.remove(cls);
+                    }
+                });
+
+                // Ubah warna background element
+                if (el.classList.contains('bg-white') || el.classList.contains('bg-gray-50') || el.classList.contains('bg-gray-100')) {
+                    el.style.backgroundColor = 'white';
+                }
+                if (el.classList.contains('bg-blue-50')) {
+                    el.style.backgroundColor = '#eff6ff'; // blue-50
+                }
+                if (el.classList.contains('bg-green-100')) {
+                    el.style.backgroundColor = '#dcfce7'; // green-100
+                }
+                if (el.classList.contains('bg-blue-100')) {
+                    el.style.backgroundColor = '#dbeafe'; // blue-100
+                }
+
+                // Ubah warna text
+                if (el.classList.contains('text-gray-700') || el.classList.contains('text-gray-800') || el.classList.contains('text-gray-900')) {
+                    el.style.color = '#111827'; // gray-900
+                }
+                if (el.classList.contains('text-gray-600')) {
+                    el.style.color = '#4b5563'; // gray-600
+                }
+                if (el.classList.contains('text-gray-400')) {
+                    el.style.color = '#9ca3af'; // gray-400
+                }
+                if (el.classList.contains('text-blue-600')) {
+                    el.style.color = '#2563eb'; // blue-600
+                }
+                if (el.classList.contains('text-blue-500')) {
+                    el.style.color = '#3b82f6'; // blue-500
+                }
+                if (el.classList.contains('text-green-700')) {
+                    el.style.color = '#15803d'; // green-700
+                }
+                if (el.classList.contains('text-green-600')) {
+                    el.style.color = '#16a34a'; // green-600
+                }
+                if (el.classList.contains('text-white')) {
+                    el.style.color = '#ffffff'; // white
+                }
+
+                // SVG handling
+                if (el.tagName === 'svg') {
+                    el.style.display = 'inline-block';
+                    el.setAttribute('fill', 'none');
+
+                    // Atur warna stroke berdasarkan parent atau class
+                    if (el.classList.contains('text-blue-600') || el.parentElement?.classList.contains('text-blue-600')) {
+                        el.setAttribute('stroke', '#2563eb'); // blue-600
+                    } else if (el.classList.contains('text-blue-500') || el.parentElement?.classList.contains('text-blue-500')) {
+                        el.setAttribute('stroke', '#3b82f6'); // blue-500
+                    } else if (el.classList.contains('text-green-600') || el.parentElement?.classList.contains('text-green-600')) {
+                        el.setAttribute('stroke', '#16a34a'); // green-600
+                    } else if (el.classList.contains('text-green-500') || el.parentElement?.classList.contains('text-green-500')) {
+                        el.setAttribute('stroke', '#22c55e'); // green-500
+                    } else if (el.classList.contains('text-white') || el.parentElement?.classList.contains('text-white')) {
+                        el.setAttribute('stroke', '#ffffff'); // white
+                    } else {
+                        el.setAttribute('stroke', '#4b5563'); // gray-600 default
+                    }
+                }
+
+                // Perbaiki border
+                if (el.classList.contains('border-gray-100')) {
+                    el.style.borderColor = '#f3f4f6'; // gray-100
+                }
+                if (el.classList.contains('border-blue-200')) {
+                    el.style.borderColor = '#bfdbfe'; // blue-200
+                }
+                if (el.classList.contains('border-white')) {
+                    el.style.borderColor = '#ffffff'; // white
+                }
+
+                // Pastikan border dashed tetap dashed
+                if (el.classList.contains('border-dashed')) {
+                    el.style.borderStyle = 'dashed';
+                }
+            });
+
+            // Perbaiki khusus untuk efek gradient dan elemen tertentu
+            const gradientEl = strukContent.querySelector('.bg-gradient-to-r');
+            if (gradientEl) {
+                gradientEl.style.background = 'linear-gradient(to right, #3b82f6, #4f46e5)';
+                gradientEl.style.color = '#ffffff';
+                const gradientChilds = gradientEl.querySelectorAll('*');
+                gradientChilds.forEach(child => {
+                    child.style.color = '#ffffff';
+                    if (child.tagName === 'svg') {
+                        child.setAttribute('stroke', '#ffffff');
+                    }
+                });
+            }
+
+            container.appendChild(strukContent);
             document.body.appendChild(container);
 
-            // Tambahkan CSS khusus untuk ekspor
-            addExportStyles(container);
-
-            // Tunggu beberapa waktu untuk gambar dimuat
+            // Tunggu sebentar agar DOM dirender
             setTimeout(() => {
-                // Persiapkan style untuk ekspor
-                fixSvgInNode(container);
-
-                // Opsi untuk html2canvas
-                const options = {
+                // Gunakan html2canvas untuk mengambil gambar
+                html2canvas(container, {
                     scale: 2,
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: '#ffffff',
-                    imageTimeout: 15000,
-                    logging: false,
                     onclone: function(clonedDoc) {
-                        const clonedElement = clonedDoc.querySelector('.export-container');
+                        const clonedElement = clonedDoc.querySelector('#printable-area');
                         if (clonedElement) {
-                            // Konversi elemen Flexbox ke table untuk hasil yang lebih konsisten
-                            const flexElements = clonedElement.querySelectorAll('.flex:not(.justify-center)');
-                            flexElements.forEach(el => {
-                                const table = document.createElement('table');
-                                table.style.width = '100%';
-                                table.style.borderCollapse = 'collapse';
-                                const row = table.insertRow();
+                            // Pastikan semua SVG terlihat
+                            const svgs = clonedElement.querySelectorAll('svg');
+                            svgs.forEach(svg => {
+                                svg.style.display = 'inline-block';
 
-                                // Kolom label
-                                const cell1 = row.insertCell();
-                                cell1.style.textAlign = 'left';
-                                cell1.style.paddingBottom = '8px';
-                                cell1.style.width = '50%';
-
-                                // Kolom nilai
-                                const cell2 = row.insertCell();
-                                cell2.style.textAlign = 'right';
-                                cell2.style.paddingBottom = '8px';
-                                cell2.style.width = '50%';
-
-                                // Pindahkan konten dari flex ke tabel
-                                const children = Array.from(el.children);
-                                if (children.length >= 2) {
-                                    cell1.appendChild(children[0].cloneNode(true));
-                                    cell2.appendChild(children[1].cloneNode(true));
-                                    el.parentNode.replaceChild(table, el);
+                                // Atur warna stroke berdasarkan parent
+                                const parent = svg.parentElement;
+                                if (parent.classList.contains('text-blue-600') || parent.style.color === '#2563eb') {
+                                    svg.setAttribute('stroke', '#2563eb'); // blue-600
+                                } else if (parent.classList.contains('text-green-500') || parent.style.color === '#22c55e') {
+                                    svg.setAttribute('stroke', '#22c55e'); // green-500
+                                } else if (parent.classList.contains('text-green-600') || parent.style.color === '#16a34a') {
+                                    svg.setAttribute('stroke', '#16a34a'); // green-600
+                                } else if (parent.classList.contains('text-white') || parent.style.color === '#ffffff') {
+                                    svg.setAttribute('stroke', '#ffffff'); // white
+                                } else {
+                                    svg.setAttribute('stroke', '#4b5563'); // gray-600 default
                                 }
                             });
-                        }
-                    }
-                };
 
-                html2canvas(container, options).then(canvas => {
-                    try {
-                        // Konversi canvas ke URL data
-                        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                            // Perbaiki warna elemen tertentu
+                            const transaksiElementSuccess = clonedElement.querySelector('.text-green-500');
+                            if (transaksiElementSuccess) {
+                                transaksiElementSuccess.style.color = '#22c55e'; // green-500
+                                const svgInSuccess = transaksiElementSuccess.querySelector('svg');
+                                if (svgInSuccess) {
+                                    svgInSuccess.setAttribute('stroke', '#22c55e');
+                                }
 
-                        // Buat link download
-                        const link = document.createElement('a');
-                        link.href = imgData;
-                        link.download = 'struk-gannstore-' + new Date().getTime() + '.jpg';
-                        link.click();
-
-                        // Bersihkan
-                        document.body.removeChild(container);
-                        document.body.removeChild(loadingIndicator);
-                    } catch (e) {
-                        console.error('Terjadi kesalahan saat ekspor JPG:', e);
-                        alert('Terjadi kesalahan saat ekspor ke JPG. Silakan coba lagi.');
-                        document.body.removeChild(container);
-                        document.body.removeChild(loadingIndicator);
-                    }
-                }).catch(err => {
-                    console.error('Terjadi kesalahan pada html2canvas:', err);
-                    alert('Terjadi kesalahan saat mengambil gambar. Silakan coba lagi.');
-                    document.body.removeChild(container);
-                    document.body.removeChild(loadingIndicator);
-                });
-            }, 500);
-        }
-
-        // Fungsi untuk ekspor ke PDF yang diperbaiki
-        function exportToPDF() {
-            // Tampilkan indikator loading
-            const loadingIndicator = document.createElement('div');
-            loadingIndicator.style.position = 'fixed';
-            loadingIndicator.style.top = '0';
-            loadingIndicator.style.left = '0';
-            loadingIndicator.style.width = '100%';
-            loadingIndicator.style.height = '100%';
-            loadingIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
-            loadingIndicator.style.display = 'flex';
-            loadingIndicator.style.justifyContent = 'center';
-            loadingIndicator.style.alignItems = 'center';
-            loadingIndicator.style.zIndex = '9999';
-            loadingIndicator.innerHTML = '<div style="background-color: white; padding: 20px; border-radius: 10px;"><p style="color: #333; font-weight: bold;">Memproses PDF, mohon tunggu...</p></div>';
-            document.body.appendChild(loadingIndicator);
-
-            // Buat clone dari area yang akan diambil
-            const element = document.getElementById('printable-area');
-            const clone = element.cloneNode(true);
-
-            // Buat container khusus untuk ekspor
-            const container = document.createElement('div');
-            container.className = 'pdf-export-container';
-            container.style.position = 'absolute';
-            container.style.left = '-9999px';
-            container.style.width = '210mm'; // A4 width
-            container.style.backgroundColor = '#ffffff';
-            container.style.overflow = 'hidden';
-            container.appendChild(clone);
-            document.body.appendChild(container);
-
-            // Tambahkan CSS khusus untuk ekspor
-            addExportStyles(container);
-
-            // Perbaiki SVG dan gambar
-            fixSvgInNode(container);
-
-            // Tunggu beberapa saat untuk gambar dimuat
-            setTimeout(() => {
-                // Konfigurasi untuk html2pdf
-                const opt = {
-                    margin: [15, 15, 15, 15],
-                    filename: 'struk-gannstore-' + new Date().getTime() + '.pdf',
-                    image: { type: 'jpeg', quality: 1 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        allowTaint: true,
-                        imageTimeout: 15000,
-                        letterRendering: true,
-                        logging: false,
-                        onclone: function(clonedDoc) {
-                            const clonedElement = clonedDoc.querySelector('.export-container');
-                            if (clonedElement) {
-                                // Konversi elemen Flexbox ke table untuk hasil yang lebih konsisten
-                                const flexElements = clonedElement.querySelectorAll('.flex:not(.justify-center)');
-                                flexElements.forEach(el => {
-                                    const table = document.createElement('table');
-                                    table.style.width = '100%';
-                                    table.style.borderCollapse = 'collapse';
-                                    const row = table.insertRow();
-
-                                    // Kolom label
-                                    const cell1 = row.insertCell();
-                                    cell1.style.textAlign = 'left';
-                                    cell1.style.paddingBottom = '8px';
-                                    cell1.style.width = '50%';
-
-                                    // Kolom nilai
-                                    const cell2 = row.insertCell();
-                                    cell2.style.textAlign = 'right';
-                                    cell2.style.paddingBottom = '8px';
-                                    cell2.style.width = '50%';
-
-                                    // Pindahkan konten dari flex ke tabel
-                                    const children = Array.from(el.children);
-                                    if (children.length >= 2) {
-                                        cell1.appendChild(children[0].cloneNode(true));
-                                        cell2.appendChild(children[1].cloneNode(true));
-                                        el.parentNode.replaceChild(table, el);
-                                    }
-                                });
                             }
                         }
-                    },
-                    jsPDF: {
-                        unit: 'mm',
-                        format: [210, 297], // A4 custom
-                        orientation: 'portrait',
-                        compress: true
-                    },
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-                };
-
-                // Generate PDF
-                html2pdf()
-                    .set(opt)
-                    .from(container)
-                    .save()
-                    .then(() => {
-                        // Bersihkan
-                        document.body.removeChild(container);
-                        document.body.removeChild(loadingIndicator);
-                    })
-                    .catch(err => {
-                        console.error('Terjadi kesalahan saat ekspor PDF:', err);
-                        alert('Terjadi kesalahan saat ekspor ke PDF. Silakan coba lagi.');
-                        document.body.removeChild(container);
-                        document.body.removeChild(loadingIndicator);
-                    });
-            }, 500);
-        }
-
-        // Fungsi pembantu untuk memperbaiki SVG di node
-        function fixSvgInNode(node) {
-            // Ganti SVG dengan ikon yang kompatibel
-            const svgs = node.querySelectorAll('svg');
-            svgs.forEach(svg => {
-                // Ambil warna dari elemen parent
-                let color = '#3b82f6'; // default blue
-                if (svg.closest('.bg-blue-50')) {
-                    color = '#3b82f6'; // blue-500
-                } else if (svg.closest('.bg-green-100')) {
-                    color = '#10b981'; // green-600
-                } else {
-                    color = '#6b7280'; // gray-500
-                }
-
-                // Dapatkan dimensi
-                const width = '20px';
-                const height = '20px';
-
-                // Ikon dasar
-                const iconContainer = document.createElement('div');
-                iconContainer.style.display = 'inline-block';
-                iconContainer.style.width = width;
-                iconContainer.style.height = height;
-                iconContainer.style.backgroundColor = color;
-                iconContainer.style.WebkitMaskSize = 'cover';
-                iconContainer.style.maskSize = 'cover';
-
-                // Tentukan jenis ikon berdasarkan parent
-                if (svg.closest('.bg-blue-50')) {
-                    iconContainer.style.borderRadius = '4px';
-                }
-
-                // Ganti SVG dengan div
-                svg.parentNode.replaceChild(iconContainer, svg);
-            });
-
-            // Perbaikan untuk tampilan gradien
-            const gradientElements = node.querySelectorAll('.bg-gradient-to-r');
-            gradientElements.forEach(el => {
-                el.style.background = 'linear-gradient(to right, #3b82f6, #4f46e5)';
-                el.style.color = '#ffffff';
-                el.style.padding = '20px';
-                el.style.textAlign = 'center';
-                el.style.borderRadius = '10px';
-            });
-
-            // Pastikan gambar dimuat dengan benar
-            const images = node.querySelectorAll('img');
-            images.forEach(img => {
-                // Jika gambar dari sumber lain, tambahkan crossorigin
-                img.setAttribute('crossorigin', 'anonymous');
-                // Ganti dengan URL absolut jika perlu
-                if (img.src.startsWith('/')) {
-                    img.src = window.location.origin + img.src;
-                }
-            });
-
-            // Perbaiki warna dan tampilan elemen lain
-            const textElements = node.querySelectorAll('[class*="text-"]');
-            textElements.forEach(el => {
-                if (el.classList.contains('text-green-700')) {
-                    el.style.color = '#047857';
-                } else if (el.classList.contains('text-blue-600')) {
-                    el.style.color = '#2563eb';
-                }
-            });
-
-            // Perbaikan untuk border
-            const borderElements = node.querySelectorAll('.border-b');
-            borderElements.forEach(el => {
-                el.style.borderBottom = '1px solid #e5e7eb';
-                el.style.marginBottom = '8px';
-                el.style.paddingBottom = '8px';
-            });
-        }
-
-        // Fungsi untuk mengambil screenshot langsung dari struk yang terlihat
-        function captureScreenshot() {
-            // Tampilkan indikator loading
-            const loadingIndicator = document.createElement('div');
-            loadingIndicator.style.position = 'fixed';
-            loadingIndicator.style.top = '0';
-            loadingIndicator.style.left = '0';
-            loadingIndicator.style.width = '100%';
-            loadingIndicator.style.height = '100%';
-            loadingIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
-            loadingIndicator.style.display = 'flex';
-            loadingIndicator.style.justifyContent = 'center';
-            loadingIndicator.style.alignItems = 'center';
-            loadingIndicator.style.zIndex = '9999';
-            loadingIndicator.innerHTML = '<div style="background-color: white; padding: 20px; border-radius: 10px;"><p style="color: #333; font-weight: bold;">Mengambil screenshot, mohon tunggu...</p></div>';
-            document.body.appendChild(loadingIndicator);
-
-            // Cache scroll position
-            const scrollPos = window.scrollY;
-
-            // Scroll ke elemen struk agar terlihat penuh
-            const printableArea = document.getElementById('printable-area');
-
-            // Hapus sementara tombol-tombol navigasi dari view selama screenshot
-            const actionButtons = document.querySelectorAll('.print\\:hidden');
-            actionButtons.forEach(btn => {
-                btn.style.display = 'none';
-            });
-
-            // Scroll ke elemen
-            printableArea.scrollIntoView({block: 'start', inline: 'start'});
-
-            // Tunggu sebentar agar scroll selesai dan semua rendering selesai
-            setTimeout(() => {
-                // Tangkap screenshot
-                html2canvas(printableArea, {
-                    scale: 2, // Scale tinggi untuk kualitas terbaik
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff',
-                    logging: false,
-                    removeContainer: false,
-                    // Pastikan semua ikon dan gambar dirender dengan benar
-                    onclone: function(clonedDoc) {
-                        const clonedElement = clonedDoc.getElementById('printable-area');
-                        const svgs = clonedElement.querySelectorAll('svg');
-                        svgs.forEach(svg => {
-                            svg.style.display = 'inline-block';
-                        });
                     }
                 }).then(canvas => {
                     try {
@@ -841,49 +1013,237 @@
                         // Buat link download
                         const link = document.createElement('a');
                         link.href = imgData;
-                        link.download = 'screenshot-struk-' + new Date().getTime() + '.png';
+                        link.download = 'struk-gannstore-terang-' + new Date().getTime() + '.png';
                         link.click();
 
-                        // Kembalikan tombol-tombol navigasi
-                        actionButtons.forEach(btn => {
-                            btn.style.display = '';
-                        });
-
-                        // Restore scroll position
-                        window.scrollTo(0, scrollPos);
-
                         // Bersihkan
-                        document.body.removeChild(loadingIndicator);
+                        document.body.removeChild(container);
+                        hideLoadingIndicator();
                     } catch (e) {
-                        console.error('Terjadi kesalahan saat mengambil screenshot:', e);
-                        alert('Terjadi kesalahan saat mengambil screenshot. Silakan coba lagi.');
-
-                        // Kembalikan tombol-tombol navigasi
-                        actionButtons.forEach(btn => {
-                            btn.style.display = '';
-                        });
-
-                        // Restore scroll position
-                        window.scrollTo(0, scrollPos);
-
-                        document.body.removeChild(loadingIndicator);
+                        console.error('Terjadi kesalahan saat ekspor gambar terang:', e);
+                        alert('Terjadi kesalahan saat ekspor gambar. Silakan coba lagi.');
+                        document.body.removeChild(container);
+                        hideLoadingIndicator();
                     }
                 }).catch(err => {
                     console.error('Terjadi kesalahan pada html2canvas:', err);
-                    alert('Terjadi kesalahan saat mengambil screenshot. Silakan coba lagi.');
-
-                    // Kembalikan tombol-tombol navigasi
-                    actionButtons.forEach(btn => {
-                        btn.style.display = '';
-                    });
-
-                    // Restore scroll position
-                    window.scrollTo(0, scrollPos);
-
-                    document.body.removeChild(loadingIndicator);
+                    alert('Terjadi kesalahan saat mengambil gambar. Silakan coba lagi.');
+                    document.body.removeChild(container);
+                    hideLoadingIndicator();
                 });
-            }, 300); // Tunggu lebih lama untuk memastikan rendering selesai
+            }, 500);
+        }
+
+        // Fungsi untuk simpan gambar gelap
+        function simpanGambarGelap() {
+            // Tampilkan indikator loading
+            showLoadingIndicator("Membuat gambar gelap...");
+
+            // Siapkan konten struk dalam mode gelap
+            const container = document.createElement('div');
+            container.style.width = '500px';
+            container.style.padding = '20px';
+            container.style.backgroundColor = '#1f2937'; // gray-800 dark mode
+            container.style.position = 'absolute';
+            container.style.left = '-9999px';
+            container.style.top = '-9999px';
+
+            // Clone struk dan terapkan mode gelap
+            const strukContent = document.getElementById('printable-area').cloneNode(true);
+            strukContent.classList.add('dark');
+
+            // Ubah semua elemen menjadi dark mode
+            const allElements = strukContent.querySelectorAll('*');
+            allElements.forEach(el => {
+                // Background
+                if (el.classList.contains('bg-white') || el.classList.contains('bg-gray-50') || el.classList.contains('bg-gray-100')) {
+                    el.style.backgroundColor = '#1f2937'; // gray-800
+                }
+                if (el.classList.contains('dark:bg-gray-800')) {
+                    el.style.backgroundColor = '#1f2937'; // gray-800
+                }
+                if (el.classList.contains('dark:bg-gray-700')) {
+                    el.style.backgroundColor = '#374151'; // gray-700
+                }
+                if (el.classList.contains('dark:bg-blue-900')) {
+                    el.style.backgroundColor = '#1e3a8a'; // blue-900
+                }
+                if (el.classList.contains('dark:bg-green-900')) {
+                    el.style.backgroundColor = '#14532d'; // green-900
+                }
+                if (el.classList.contains('dark:bg-blue-800')) {
+                    el.style.backgroundColor = '#1e40af'; // blue-800
+                }
+
+                // Text
+                if (el.classList.contains('text-gray-700') || el.classList.contains('text-gray-800') || el.classList.contains('text-gray-900')) {
+                    el.style.color = '#e5e7eb'; // gray-200
+                }
+                if (el.classList.contains('dark:text-gray-300')) {
+                    el.style.color = '#d1d5db'; // gray-300
+                }
+                if (el.classList.contains('dark:text-gray-400')) {
+                    el.style.color = '#9ca3af'; // gray-400
+                }
+                if (el.classList.contains('dark:text-gray-200')) {
+                    el.style.color = '#e5e7eb'; // gray-200
+                }
+                if (el.classList.contains('dark:text-blue-400')) {
+                    el.style.color = '#60a5fa'; // blue-400
+                }
+                if (el.classList.contains('dark:text-green-400')) {
+                    el.style.color = '#4ade80'; // green-400
+                }
+                if (el.classList.contains('text-white')) {
+                    el.style.color = '#ffffff'; // white
+                }
+
+                // Border
+                if (el.classList.contains('dark:border-gray-700')) {
+                    el.style.borderColor = '#374151'; // gray-700
+                }
+                if (el.classList.contains('dark:border-blue-800')) {
+                    el.style.borderColor = '#1e40af'; // blue-800
+                }
+                if (el.classList.contains('border-white')) {
+                    el.style.borderColor = '#ffffff'; // white
+                }
+
+                // Pastikan border dashed tetap dashed
+                if (el.classList.contains('border-dashed')) {
+                    el.style.borderStyle = 'dashed';
+                }
+
+                // SVG handling
+                if (el.tagName === 'svg') {
+                    el.style.display = 'inline-block';
+                    el.setAttribute('fill', 'none');
+
+                    // Atur warna stroke berdasarkan parent atau class
+                    if (el.classList.contains('dark:text-blue-400') || el.parentElement?.classList.contains('dark:text-blue-400')) {
+                        el.setAttribute('stroke', '#60a5fa'); // blue-400
+                    } else if (el.classList.contains('dark:text-green-400') || el.parentElement?.classList.contains('dark:text-green-400')) {
+                        el.setAttribute('stroke', '#4ade80'); // green-400
+                    } else if (el.classList.contains('text-white') || el.parentElement?.classList.contains('text-white')) {
+                        el.setAttribute('stroke', '#ffffff'); // white
+                    } else {
+                        el.setAttribute('stroke', '#d1d5db'); // gray-300 default
+                    }
+                }
+            });
+
+            // Perbaiki khusus untuk efek gradient dan elemen tertentu
+            const gradientEl = strukContent.querySelector('.bg-gradient-to-r');
+            if (gradientEl) {
+                gradientEl.style.background = 'linear-gradient(to right, #3b82f6, #4f46e5)';
+                gradientEl.style.color = '#ffffff';
+                const gradientChilds = gradientEl.querySelectorAll('*');
+                gradientChilds.forEach(child => {
+                    child.style.color = '#ffffff';
+                    if (child.tagName === 'svg') {
+                        child.setAttribute('stroke', '#ffffff');
+                    }
+                });
+            }
+
+            container.appendChild(strukContent);
+            document.body.appendChild(container);
+
+            // Tunggu sebentar agar DOM dirender
+            setTimeout(() => {
+                // Gunakan html2canvas untuk mengambil gambar
+                html2canvas(container, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#1f2937', // gray-800 dark mode
+                    onclone: function(clonedDoc) {
+                        const clonedElement = clonedDoc.querySelector('#printable-area');
+                        if (clonedElement) {
+                            // Pastikan semua SVG terlihat
+                            const svgs = clonedElement.querySelectorAll('svg');
+                            svgs.forEach(svg => {
+                                svg.style.display = 'inline-block';
+
+                                // Atur warna stroke berdasarkan parent
+                                const parent = svg.parentElement;
+                                if (parent.classList.contains('dark:text-blue-400') || parent.style.color === '#60a5fa') {
+                                    svg.setAttribute('stroke', '#60a5fa'); // blue-400
+                                } else if (parent.classList.contains('dark:text-green-400') || parent.style.color === '#4ade80') {
+                                    svg.setAttribute('stroke', '#4ade80'); // green-400
+                                } else if (parent.classList.contains('text-white') || parent.style.color === '#ffffff') {
+                                    svg.setAttribute('stroke', '#ffffff'); // white
+                                } else {
+                                    svg.setAttribute('stroke', '#d1d5db'); // gray-300 default
+                                }
+                            });
+
+                            // Perbaiki warna elemen tertentu
+                            const transaksiElementSuccess = clonedElement.querySelector('.dark\\:text-green-400, .text-green-500');
+                            if (transaksiElementSuccess) {
+                                transaksiElementSuccess.style.color = '#4ade80'; // green-400 dark mode
+                                const svgInSuccess = transaksiElementSuccess.querySelector('svg');
+                                if (svgInSuccess) {
+                                    svgInSuccess.setAttribute('stroke', '#4ade80');
+                                }
+                            }
+                        }
+                    }
+                }).then(canvas => {
+                    try {
+                        // Konversi canvas ke URL data dengan format PNG untuk kualitas terbaik
+                        const imgData = canvas.toDataURL('image/png');
+
+                        // Buat link download
+                        const link = document.createElement('a');
+                        link.href = imgData;
+                        link.download = 'struk-gannstore-gelap-' + new Date().getTime() + '.png';
+                        link.click();
+
+                        // Bersihkan
+                        document.body.removeChild(container);
+                        hideLoadingIndicator();
+                    } catch (e) {
+                        console.error('Terjadi kesalahan saat ekspor gambar gelap:', e);
+                        alert('Terjadi kesalahan saat ekspor gambar. Silakan coba lagi.');
+                        document.body.removeChild(container);
+                        hideLoadingIndicator();
+                    }
+                }).catch(err => {
+                    console.error('Terjadi kesalahan pada html2canvas:', err);
+                    alert('Terjadi kesalahan saat mengambil gambar. Silakan coba lagi.');
+                    document.body.removeChild(container);
+                    hideLoadingIndicator();
+                });
+            }, 500);
+        }
+
+        // Fungsi untuk menampilkan loading indicator
+        function showLoadingIndicator(message) {
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.id = 'loading-indicator';
+            loadingIndicator.style.position = 'fixed';
+            loadingIndicator.style.top = '0';
+            loadingIndicator.style.left = '0';
+            loadingIndicator.style.width = '100%';
+            loadingIndicator.style.height = '100%';
+            loadingIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            loadingIndicator.style.display = 'flex';
+            loadingIndicator.style.justifyContent = 'center';
+            loadingIndicator.style.alignItems = 'center';
+            loadingIndicator.style.zIndex = '9999';
+            loadingIndicator.innerHTML = `<div style="background-color: white; padding: 20px; border-radius: 10px;"><p style="color: #333; font-weight: bold;">${message}</p></div>`;
+            document.body.appendChild(loadingIndicator);
+        }
+
+        // Fungsi untuk menghilangkan loading indicator
+        function hideLoadingIndicator() {
+            const loadingIndicator = document.getElementById('loading-indicator');
+            if (loadingIndicator) {
+                document.body.removeChild(loadingIndicator);
+            }
         }
     </script>
     @endpush
 </x-app-layout>
+

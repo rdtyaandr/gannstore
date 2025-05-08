@@ -1,33 +1,44 @@
 {
     "version": 2,
-      "framework": null,
+    "framework": null,
     "functions": {
         "api/index.php": { "runtime": "vercel-php@0.7.3" }
     },
-    "routes": [
-        { "src": "/images/(.*)", "dest": "/public/images/$1" },
-        { "src": "/build/(.*)", "dest": "/public/build/$1" },
-        { "src": "/favicon.ico", "dest": "/public/favicon.ico" },
-        { "src": "/robots.txt", "dest": "/public/robots.txt" },
+    "rewrites": [
+        { "source": "/build/(.*)", "destination": "/public/build/$1" },
+        { "source": "/images/(.*)", "destination": "/public/images/$1" },
+        { "source": "/favicon.ico", "destination": "/public/favicon.ico" },
+        { "source": "/robots.txt", "destination": "/public/robots.txt" },
+        { "source": "/(.*)", "destination": "/api/index.php" }
+    ],
+    "headers": [
         {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
+            "source": "/(.*)",
+            "headers": [
+                { "key": "X-Content-Type-Options", "value": "nosniff" },
+                { "key": "X-Frame-Options", "value": "DENY" },
+                { "key": "X-XSS-Protection", "value": "1; mode=block" },
+                { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
+                { "key": "Content-Security-Policy", "value": "upgrade-insecure-requests" }
+            ]
         }
     ],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "https://yourprojectdomain.com",
+        "APP_URL": "https://gannstore.vercel.app",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
-        "VIEW_COMPILED_PATH": "/tmp",
+        "VIEW_COMPILED_PATH": "/tmp/views",
 
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+        "VIEW_CACHE_PATH": "/tmp/views",
+        "ASSET_URL": ""
     }
 }

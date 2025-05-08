@@ -13,7 +13,9 @@
         <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700" rel="stylesheet" />
 
         <!-- Styles / Scripts -->
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @if(env('VERCEL_DEPLOYMENT') && function_exists('vercel_vite_assets'))
+            @php vercel_vite_assets() @endphp
+        @else
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
     </head>

@@ -15,7 +15,11 @@
         <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @if(env('VERCEL_DEPLOYMENT') && function_exists('vercel_vite_assets'))
+            @php vercel_vite_assets() @endphp
+        @else
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @endif
     </head>
     <body class="font-sans text-gray-800 antialiased bg-gray-50 dark:bg-gray-900 dark:text-gray-200">
         <div class="min-h-screen flex flex-col sm:justify-center items-center px-4 py-8 sm:pt-0">

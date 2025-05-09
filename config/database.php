@@ -59,7 +59,14 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', true),
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_TIMEOUT => 30,
             ]) : [],
+            'pool' => [
+                'enabled' => env('DB_POOL', true),
+                'max' => env('DB_POOL_MAX', 5),
+            ],
         ],
 
         'mariadb' => [

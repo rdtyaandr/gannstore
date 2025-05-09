@@ -2,10 +2,6 @@
 /node_modules
 /.git
 /.github
-/.idea
-/.vscode
-/.env*
-!/.env.example
 /storage/*.key
-/bootstrap/cache/*
-/tests
+/storage/logs
+/storage/framework
